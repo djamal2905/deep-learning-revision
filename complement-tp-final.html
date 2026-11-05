@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Deep Learning : complement TP final</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js" defer></script>
+<style>
+:root{
+  --navy:#19375f; --accent:#236eaa; --accent2:#b5643f; --bg:#fbfcfe; --card:#ffffff;
+  --border:#dde6f0; --text:#1d2733; --muted:#5b6b7c; --warn-bg:#fff4e8; --warn-border:#d99a4e;
+  --ok-bg:#eaf6ee; --ok-border:#4caf7d; --code-bg:#f3f6fa;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-serif;line-height:1.55;}
+header{background:var(--navy);color:#fff;padding:28px 24px;}
+header h1{margin:0 0 6px;font-size:1.6rem;}
+header p{margin:0;color:#cfe0f2;font-size:.95rem;}
+nav.toc{background:#eef4fb;border-bottom:1px solid var(--border);padding:10px 24px;position:sticky;top:0;z-index:10;}
+nav.toc a{color:var(--accent);text-decoration:none;font-size:.9rem;margin-right:16px;font-weight:600;}
+nav.toc a:hover{text-decoration:underline;}
+main{max-width:980px;margin:0 auto;padding:24px;}
+section{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px 26px;margin-bottom:26px;}
+h2{color:var(--navy);border-bottom:2px solid var(--accent);padding-bottom:6px;margin-top:0;}
+h3{color:var(--accent);margin-bottom:6px;}
+.box{border-radius:8px;padding:12px 16px;margin:12px 0;}
+.box-def{background:#eef4fb;border-left:4px solid var(--accent);}
+.box-warn{background:var(--warn-bg);border-left:4px solid var(--warn-border);}
+.box-ok{background:var(--ok-bg);border-left:4px solid var(--ok-border);}
+.box-flag{background:#fdeeee;border-left:4px solid #c05656;font-size:.92rem;}
+code,pre{font-family:"JetBrains Mono",Consolas,monospace;}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;overflow-x:auto;font-size:.85rem;}
+code{background:var(--code-bg);padding:1px 5px;border-radius:4px;}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:.9rem;}
+th,td{border:1px solid var(--border);padding:6px 10px;text-align:left;vertical-align:top;}
+th{background:#eef4fb;color:var(--navy);}
+.muted{color:var(--muted);font-size:.88rem;}
+.checklist li{margin-bottom:4px;}
+footer{text-align:center;color:var(--muted);font-size:.82rem;padding:20px;}
+.badge{display:inline-block;background:var(--accent2);color:#fff;border-radius:5px;padding:1px 8px;font-size:.75rem;font-weight:700;margin-left:6px;}
+</style>
+</head>
+<body>
+<header>
+<h1>Complement de revision : TP final Deep Learning</h1>
+<p>BERT (document fourni), solution TP4 (LSTM/GRU), methodologie experimentale, transfer learning. A lire en plus de memo-cours.html et rappel-express.html.</p>
+</header>
+<nav class="toc">
+<a href="#checklist">Checklist</a>
+<a href="#bert">1. BERT</a>
+<a href="#tp4">2. TP4 : solution LSTM/GRU</a>
+<a href="#methodo">3. Methodologie</a>
+<a href="#transfer">4. Transfer learning</a>
+</nav>
+
+<main>
+
+<section id="checklist">
+<h2>Checklist avant le TP (d'apres l'email de I. Yamane)</h2>
+<ul class="checklist">
+<li>TP note (3h, salle info) <b>reporte</b>, le 2 novembre est un TP5 normal, non note. Nouvelle date a venir (au moins +1 semaine).</li>
+<li>Format prevu : 1) analyse/plan 1h sur papier, sans appareil ; 2) ramassage 5 min ; 3) pause/setup 10 min ; 4) implementation ~50 min sur machine (recherche web + IA <b>autorisees</b> dans le navigateur de la salle, aucun autre appareil) ; 5) synthese ~35 min sur papier, sans appareil.</li>
+<li>Ponderation finale : TP note 50%, midterm 45%, quiz atelier 6 : 5%.</li>
+<li>Les phases 1, 4 et 5 sont notees ; la phase 1 (analyse/plan) compte le plus.</li>
+<li><b>Lire le document BERT avant le TP</b> (section 1 ci-dessous) : non consultable pendant l'epreuve.</li>
+<li>Revoir TP4 (RNN/GRU) et son code, la partie Transformer/attention du CM3, le transfer learning (TP2-3), et la methodologie (train/val/test, comparaisons justes, variabilite, courbes).</li>
+</ul>
+</section>
+
+<section id="bert">
+<h2>1. BERT, ce qu'il faut savoir du document fourni <span class="badge">EXAMINE DIRECTEMENT</span></h2>
+<p class="muted">Digeste fidele de <code>preparation_bert.pdf</code> (Yamane, 28/10/2026). Le TP porte sur ce document precisement, rien de plus n'est requis.</p>
+
+<div class="box box-def">
+<h3>Pourquoi un encodeur seul suffit</h3>
+<p>Pour la traduction (vue en cours), un <b>encodeur</b> transforme la phrase source en vecteurs, et un <b>decodeur</b> produit la traduction mot a mot. Pour classifier un texte, la sortie est une seule etiquette (pas une phrase) : pas besoin de decodeur. BERT est un tel encodeur, et il est pre-entraine.</p>
+</div>
+
+<h3>1. Ce qu'est BERT</h3>
+<p>Empilement de couches d'<b>encodeur</b> Transformer (self-attention + feed-forward), <b>sans decodeur</b>. "Bidirectionnel" = le vecteur d'un token depend des mots a sa gauche <b>et</b> a sa droite (contrairement a un decodeur causal/GPT).</p>
+
+<h3>2. Entree</h3>
+<ul>
+<li>Texte decoupe en <b>sous-mots</b> (tokenisation WordPiece), chaque token remplace par son indice.</li>
+<li><code>[CLS]</code> place au <b>debut</b> de chaque entree ; <code>[SEP]</code> marque la fin d'une phrase (ou la separation entre deux phrases).</li>
+<li>Embedding d'un token = embedding de token + embedding de <b>position</b> (somme).</li>
+<li>Dans un mini-batch, les phrases sont <b>paddees</b> a la meme longueur. Un <b>masque d'attention</b> (1 = vrai token, 0 = padding) est fourni : tout poids d'attention sur une position de padding est mis a 0, donc les vecteurs des vrais tokens ne dependent pas de la quantite de padding ajoutee.</li>
+</ul>
+
+<h3>3. Sortie</h3>
+<p>BERT retourne <b>un vecteur latent par token</b> (embedding contextuel), autant de vecteurs que de tokens en entree. Chaque vecteur est calcule par attention sur <b>tous</b> les tokens de l'entree. En particulier, le vecteur a la position de <code>[CLS]</code> peut resumer toute l'entree.</p>
+
+<h3>4. Utiliser BERT pour la classification</h3>
+<p>Une couche lineaire est ajoutee sur le vecteur <code>[CLS]</code> pour produire les scores de classe. Le <b>fine-tuning</b> = entrainer ensuite sur les donnees labellisees de la tache, en partant des poids appris au pre-entrainement.</p>
+<table>
+<tr><th>Variante</th><th>Ce qui est entraine</th><th>Compromis</th></tr>
+<tr><td>Reseau entier</td><td>encodeur + nouvelle couche</td><td>meilleure performance, plus couteux</td></tr>
+<tr><td>Encodeur gele</td><td><code>p.requires_grad = False</code> sur l'encodeur ; seule la couche lineaire entraine</td><td>moins cher, mais ne peut pas adapter ses vecteurs a la tache &rArr; accuracy generalement plus basse</td></tr>
+</table>
+
+<h3>5. Pre-entrainement</h3>
+<p>Avant toute tache, BERT est entraine sur une tres grande quantite de texte <b>non labellise</b> (livres + Wikipedia anglais) avec deux taches auto-supervisees :</p>
+<ul>
+<li><b>masked language modelling</b> : 15% des tokens sont caches, le modele doit les predire a partir du contexte ;</li>
+<li><b>next-sentence prediction</b> : etant donnes deux segments A et B, predire si B suit vraiment A dans le texte original ; utilise le vecteur de <code>[CLS]</code>.</li>
+</ul>
+<p>Aucun label humain requis (le texte fournit lui-meme les reponses) &rArr; l'encodeur a appris des connaissances generales sur la langue avant de voir un seul exemple labellise de la tache. <b>Consequence :</b> un encodeur pre-entraine a generalement besoin de <b>beaucoup moins d'exemples labellises</b> qu'une meme architecture entrainee from scratch. L'avantage est maximal quand les donnees labellisees sont rares, et diminue quand elles deviennent abondantes (un modele from scratch peut alors apprendre davantage des labels eux-memes).</p>
+
+<div class="box box-ok">
+<b>Angle d'examen probable :</b> comparer BERT (encodeur seul, bidirectionnel, comprehension) vs GPT (decodeur seul, masquage causal, generation) vs le Transformer complet encodeur-decodeur vu en cours pour la traduction. Savoir justifier <i>pourquoi</i> pas de decodeur pour une tache de classification (sortie = une etiquette, pas une sequence).
+</div>
+</section>
+
+<section id="tp4">
+<h2>2. TP4, Solution complete annotee (LSTM puis variante GRU) <span class="badge">CODE A SAVOIR EXPLIQUER</span></h2>
+<p class="muted">Le notebook <code>practical-4-1-RNN_human_activity_recognition.ipynb</code> est fourni en squelette (TODO). Voici une solution idiomatique, dans le style exact du tutoriel PyTorch du cours (classes <code>MyTrainableModel</code> / <code>MyTrainer</code> / <code>LiveLossPlot</code> vues en TP1). Donnees : 9 capteurs x 128 pas de temps, 6 classes d'activite.</p>
+
+<h3>Preparation des donnees (Exercice 2)</h3>
+<pre><code>import torch
+from torch.utils.data import TensorDataset, random_split, DataLoader
+
+X_train_t = torch.tensor(X_train, dtype=torch.float32)        # (n, 128, 9)
+y_train_t = torch.tensor(y_train, dtype=torch.long) - 1        # classes 1..6 -> 0..5 !
+X_test_t  = torch.tensor(X_test,  dtype=torch.float32)
+y_test_t  = torch.tensor(y_test,  dtype=torch.long) - 1
+
+full_train = TensorDataset(X_train_t, y_train_t)   # pas besoin d'une classe Dataset dediee :
+                                                    # tout tient deja en memoire, TensorDataset suffit.
+n_val = int(0.2 * len(full_train))
+train_data, val_data = random_split(full_train, [len(full_train) - n_val, n_val])
+test_data = TensorDataset(X_test_t, y_test_t)
+
+train_dataloader = DataLoader(train_data, batch_size=64, shuffle=True)
+val_dataloader   = DataLoader(val_data,   batch_size=64, shuffle=False)
+test_dataloader  = DataLoader(test_data,  batch_size=64, shuffle=False)
+</code></pre>
+<div class="box box-warn"><b>Piege classique :</b> les labels du dataset vont de 1 a 6, mais <code>nn.CrossEntropyLoss</code> attend des indices <b>0-indexes</b>. Oublier le <code>-1</code> plante silencieusement ou degrade l'accuracy.</div>
+
+<h3>Architecture (Exercice 3), LSTM</h3>
+<pre><code>from torch import nn
+
+class LSTMNetwork(nn.Module):
+    def __init__(self, n_channels, n_classes, n_hidden=100):
+        super().__init__()
+        self.lstm = nn.LSTM(input_size=n_channels, hidden_size=n_hidden, batch_first=True)
+        self.linear = nn.Linear(n_hidden, n_classes)
+        self.loss_fn_mean = nn.CrossEntropyLoss(reduction='mean')
+        self.loss_fn_sum  = nn.CrossEntropyLoss(reduction='sum')
+
+    def forward(self, x):
+        # x: (batch, 128, 9). output: (batch, 128, hidden) ; h_n: (1, batch, hidden)
+        output, (h_n, c_n) = self.lstm(x)
+        last_hidden = h_n[-1]              # derniere couche, dernier pas de temps : (batch, hidden)
+        return self.linear(last_hidden)
+
+    def configure_optimizers(self):
+        return torch.optim.Adam(self.parameters())
+
+    def training_step(self, batch):
+        X, y = batch
+        pred = self(X)
+        return self.loss_fn_mean(pred, y)
+
+    def validation_step(self, batch):
+        X, y = batch
+        with torch.no_grad():
+            pred = self(X)
+            loss = self.loss_fn_sum(pred, y).item()
+        return loss, pred.argmax(1), y
+</code></pre>
+
+<div class="box box-def">
+<h3>Variante GRU : ce qui change (et seulement ca)</h3>
+<pre><code>self.gru = nn.GRU(input_size=n_channels, hidden_size=n_hidden, batch_first=True)
+...
+output, h_n = self.gru(x)   # <b>pas de cell state c_n</b> : le GRU n'a qu'un etat cache, pas de memoire separee
+last_hidden = h_n[-1]
+</code></pre>
+<p><b>Difference d'interface a connaitre :</b> <code>nn.LSTM</code> retourne <code>(output, (h_n, c_n))</code> (etat cache + etat de cellule separes), <code>nn.GRU</code> retourne <code>(output, h_n)</code> (un seul etat, qui fusionne les roles de "memoire courte" et "sortie"). Conceptuellement, le GRU fusionne les portes d'oubli/entree du LSTM en une seule porte de mise a jour, avec moins de parametres (3 matrices de poids contre 4 pour le LSTM) &rArr; plus rapide a entrainer, performance souvent comparable sur des sequences courtes/moyennes (ici 128 pas de temps).</p>
+</div>
+
+<h3>Entrainement (Exercice 4-5), reprend <code>MyTrainer</code> du TP1</h3>
+<pre><code>device = "cuda" if torch.cuda.is_available() else "cpu"
+model = LSTMNetwork(n_channels=9, n_classes=6).to(device)
+
+class Trainer:
+    def __init__(self, max_epochs, device):
+        self.max_epochs = max_epochs
+        self.device = device
+
+    def fit(self, model, train_dataloader, val_dataloader):
+        model = model.to(self.device)
+        optimizer = model.configure_optimizers()
+        plotter = LiveLossPlot()   # cf. TP1 : affiche train loss / val loss / val accuracy a chaque epoch
+
+        for epoch in range(self.max_epochs):
+            model.train()
+            running_loss, n_batches = 0.0, 0
+            for X, y in train_dataloader:
+                X, y = X.to(self.device), y.to(self.device)
+                loss = model.training_step((X, y))
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+                running_loss += loss.item(); n_batches += 1
+            train_loss = running_loss / n_batches
+
+            model.eval()
+            val_loss, correct, n = 0.0, 0, 0
+            for X, y in val_dataloader:
+                X, y = X.to(self.device), y.to(self.device)
+                loss, pred, y_true = model.validation_step((X, y))
+                val_loss += loss
+                correct += (pred == y_true).sum().item()
+                n += len(y)
+            val_loss /= n
+            plotter.update(epoch, train_loss, val_loss, correct / n)
+
+trainer = Trainer(max_epochs=10, device=device)
+trainer.fit(model, train_dataloader, val_dataloader)
+</code></pre>
+
+<h3>Evaluation finale (Exercice 6)</h3>
+<pre><code>model.eval()
+correct, n = 0, 0
+with torch.no_grad():
+    for X, y in test_dataloader:
+        X, y = X.to(device), y.to(device)
+        pred = model(X).argmax(1)
+        correct += (pred == y).sum().item()
+        n += len(y)
+print(f"Test accuracy: {100 * correct / n:.1f}%")   # UNE SEULE fois, a la toute fin
+</code></pre>
+<div class="box box-ok">Le test set n'est touche qu'ici, une seule fois, apres que tous les choix (architecture, hyperparametres, nombre d'epochs) ont deja ete faits sur train/val uniquement.</div>
+</section>
+
+<section id="methodo">
+<h2>3. Methodologie experimentale <span class="badge">NOTE EN PHASE 1 ET 5</span></h2>
+
+<h3>Comparaisons justes entre modeles</h3>
+<ul>
+<li>Memes splits train/val/test pour tous les modeles compares (meme seed de split).</li>
+<li>Meme budget (nombre d'epochs ou de pas de gradient, pas seulement "meme nombre d'epochs" si les architectures different en cout par epoch).</li>
+<li>Memes pretraitements (normalisation, augmentation) appliques identiquement.</li>
+<li>Hyperparametres choisis sur le <b>val</b> set uniquement, jamais sur le test.</li>
+<li>Le test set n'est regarde qu'une seule fois, a la toute fin, pour le modele final deja selectionne.</li>
+</ul>
+
+<h3>Variabilite entre runs d'entrainement</h3>
+<p>Un seul entrainement ne prouve rien : l'initialisation aleatoire des poids et l'ordre de tirage des mini-batchs font varier le resultat d'un run a l'autre. Deux consequences pratiques :</p>
+<ul>
+<li>Fixer une <b>seed</b> (<code>torch.manual_seed(...)</code>) pour la reproductibilite locale pendant le developpement.</li>
+<li>Pour comparer deux modeles serieusement, repeter l'entrainement avec plusieurs seeds et rapporter une moyenne &plusmn; ecart-type si le temps le permet ; ne jamais conclure "A meilleur que B" a partir d'un seul run si l'ecart observe est faible (potentiellement du bruit d'initialisation, pas une vraie difference de modele).</li>
+</ul>
+
+<h3>Lire une courbe train/val</h3>
+<table>
+<tr><th>Signature observee</th><th>Diagnostic</th><th>Piste</th></tr>
+<tr><td>Train et val descendent ensemble, puis val remonte (ou plateau) alors que train continue de descendre</td><td><b>Overfitting</b></td><td>plus de regularisation (dropout, weight decay), moins d'epochs (early stopping), plus de donnees/augmentation</td></tr>
+<tr><td>Train et val restent hauts tous les deux, loin de converger</td><td><b>Underfitting</b></td><td>modele trop simple, pas assez d'epochs, learning rate mal regle</td></tr>
+<tr><td>Loss qui oscille violemment / diverge</td><td>Learning rate trop eleve</td><td>reduire le LR, verifier la normalisation des entrees</td></tr>
+<tr><td>Loss qui descend tres lentement, presque plate</td><td>Learning rate trop faible (ou gradients qui s'evanouissent)</td><td>augmenter le LR, verifier l'architecture (fiche RNN/LSTM du memo-cours)</td></tr>
+</table>
+</section>
+
+<section id="transfer">
+<h2>4. Transfer learning : pre-entrainement et fine-tuning <span class="badge">TP2-3</span></h2>
+<div class="box box-flag"><b>Note :</b> les notebooks TP2-3 exacts n'ont pas ete retrouves localement sur cette machine. Cette section est construite a partir des principes generaux du transfer learning et de la section 4 du document BERT (section 1 ci-dessus), pas d'un code TP2-3 specifique. Si vous avez les notebooks sous la main, completez cette section avec le code reel avant le TP.</div>
+
+<h3>Pourquoi pre-entrainer</h3>
+<p>Apprendre des representations generales sur une grande quantite de donnees (non ou faiblement supervisees), puis les reutiliser pour une tache cible ou les donnees labellisees sont rares. Exactement le raisonnement du document BERT section 5 : l'avantage du pre-entrainement est maximal quand peu de donnees labellisees sont disponibles, et diminue quand elles deviennent abondantes.</p>
+
+<h3>Deux strategies de fine-tuning</h3>
+<table>
+<tr><th>Strategie</th><th>Mecanisme PyTorch</th><th>Avantage</th><th>Inconvenient</th></tr>
+<tr><td>Feature extraction (backbone gele)</td><td><code>for p in backbone.parameters(): p.requires_grad = False</code>, seule la nouvelle tete entraine</td><td>rapide, peu de donnees necessaires, peu de risque de sur-apprentissage</td><td>le backbone ne peut pas s'adapter a la tache &rArr; plafond de performance plus bas</td></tr>
+<tr><td>Fine-tuning complet</td><td>tous les parametres entrainables, souvent avec un <b>learning rate plus faible</b> que from scratch</td><td>meilleure performance si assez de donnees labellisees</td><td>plus couteux, risque d'oubli catastrophique / overfitting si trop peu de donnees</td></tr>
+</table>
+<p class="muted">Raffinement possible : learning rate differencie par couche (plus faible pres de l'entree, plus eleve pres de la sortie), pour preserver les representations generales apprises tot tout en adaptant davantage les couches proches de la tache.</p>
+</section>
+
+</main>
+<footer>Djamal TOE, ENSAI 3A, complement de revision, a utiliser avec memo-cours.html et rappel-express.html.</footer>
+</body>
+</html>

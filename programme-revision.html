@@ -1,0 +1,1125 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programme TP noté DL</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+:root{--bg:#f6f6f2;--card:#fff;--ink:#1c2330;--mute:#5c6577;--line:#e3e3dc;--acc:#1f5fbf;--acc-soft:#e8f0fc;--ok:#1a7f4b;--ok-soft:#e5f5ec;--ko:#b3261e;--ko-soft:#fbe9e7;--warn:#9a5b00;--warn-soft:#fdf2df;--code:#f1f2f4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151b;--card:#1a1f27;--ink:#e5e8ee;--mute:#9aa4b5;--line:#2b323e;--acc:#6aa5ff;--acc-soft:#1c2a40;--ok:#4cc488;--ok-soft:#163026;--ko:#ff8a80;--ko-soft:#3a1d1b;--warn:#f0b35a;--warn-soft:#352812;--code:#222833}}
+:root[data-theme="dark"]{--bg:#12151b;--card:#1a1f27;--ink:#e5e8ee;--mute:#9aa4b5;--line:#2b323e;--acc:#6aa5ff;--acc-soft:#1c2a40;--ok:#4cc488;--ok-soft:#163026;--ko:#ff8a80;--ko-soft:#3a1d1b;--warn:#f0b35a;--warn-soft:#352812;--code:#222833}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);padding:8px 16px;display:flex;align-items:center;gap:12px}
+header.top b{white-space:nowrap}
+.pbar{flex:1;height:8px;background:var(--line);border-radius:99px;overflow:hidden;min-width:60px}
+.pbar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+#ptxt{font-size:.85rem;color:var(--mute);white-space:nowrap}
+button{font:inherit;cursor:pointer}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:5px 12px;border-radius:8px}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.layout{display:grid;grid-template-columns:250px 1fr;max-width:1180px;margin:0 auto}
+nav.side{position:sticky;top:49px;height:calc(100vh - 49px);overflow:auto;padding:14px 10px;border-right:1px solid var(--line)}
+nav.side a{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:8px;text-decoration:none;color:var(--ink);font-size:.93rem}
+nav.side a:hover{background:var(--acc-soft)}
+nav.side a .n{flex:none;width:22px;height:22px;border-radius:50%;background:var(--line);display:grid;place-items:center;font-size:.75rem;font-weight:700}
+nav.side a.done .n{background:var(--ok);color:#fff}
+nav.side small{display:block;color:var(--mute);padding:10px 8px 4px;text-transform:uppercase;font-size:.72rem;letter-spacing:.05em}
+main{padding:18px 22px 80px;min-width:0}
+section.step{margin-bottom:46px;scroll-margin-top:60px}
+h1{font-size:1.7rem;margin:.2em 0 .3em}
+h2{font-size:1.45rem;margin:0 0 .2em;display:flex;gap:10px;align-items:center}
+h2 .tag{font-size:.75rem;background:var(--acc-soft);color:var(--acc);padding:2px 9px;border-radius:99px;font-weight:600}
+h3{font-size:1.1rem;margin:1.4em 0 .5em}
+h4{margin:1em 0 .3em}
+.lead{color:var(--mute);margin-top:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:12px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.note{border-left:4px solid var(--acc);background:var(--acc-soft);padding:8px 14px;border-radius:0 8px 8px 0;margin:10px 0}
+.warn{border-left:4px solid var(--warn);background:var(--warn-soft);padding:8px 14px;border-radius:0 8px 8px 0;margin:10px 0}
+.key{border-left:4px solid var(--ok);background:var(--ok-soft);padding:8px 14px;border-radius:0 8px 8px 0;margin:10px 0}
+code,pre{font-family:"IBM Plex Mono",ui-monospace,Consolas,"Cascadia Code",monospace;font-size:.86em}
+code{background:var(--code);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);padding:10px 12px;border-radius:8px;overflow:auto;line-height:1.45}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:.93rem;margin:8px 0}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--acc-soft)}
+.tw{overflow-x:auto}
+details.sol{border:1px dashed var(--line);border-radius:8px;padding:6px 12px;margin:8px 0;background:var(--card)}
+details.sol>summary{cursor:pointer;color:var(--acc);font-weight:600}
+details.sol[open]{border-style:solid}
+.ex{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:12px 0}
+.ex>.h{font-weight:700;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.lvl{font-size:.72rem;padding:1px 8px;border-radius:99px;font-weight:700}
+.l1{background:var(--ok-soft);color:var(--ok)}.l2{background:var(--warn-soft);color:var(--warn)}.l3{background:var(--ko-soft);color:var(--ko)}
+.can{list-style:none;padding:0;margin:8px 0}
+.can li{display:flex;gap:8px;align-items:flex-start;padding:3px 0}
+.can input{margin-top:5px;width:17px;height:17px;flex:none}
+.quiz .q{border-top:1px solid var(--line);padding:10px 0}
+.quiz .q:first-child{border-top:0}
+.quiz .opt{display:block;margin:4px 0;padding:6px 10px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.quiz .opt input{margin-right:8px}
+.quiz .opt.good{background:var(--ok-soft);border-color:var(--ok)}
+.quiz .opt.bad{background:var(--ko-soft);border-color:var(--ko)}
+.quiz .exp{display:none;font-size:.93rem;color:var(--mute);margin-top:6px}
+.quiz.checked .exp{display:block}
+.score{font-weight:700;margin-left:10px}
+.fc-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.fc{border:1px solid var(--line);border-radius:10px;padding:12px;min-height:110px;cursor:pointer;background:var(--card);position:relative}
+.fc .b{display:none;color:var(--ink)}
+.fc.flip .a{display:none}.fc.flip .b{display:block}
+.fc .a{font-weight:600}
+.fc.known{border-color:var(--ok);background:var(--ok-soft)}
+.fc .mk{position:absolute;right:8px;bottom:6px;font-size:.75rem}
+.codex .ln{display:block;padding:1px 8px;border-radius:4px;cursor:pointer;white-space:pre}
+.codex .ln:hover{background:var(--acc-soft)}
+.codex .ln.on{background:var(--warn-soft)}
+#codex-exp{min-height:70px}
+.att input{width:54px;padding:3px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:inherit;font-size:.9rem}
+.att table td,.att table th{text-align:center}
+.heat{font-variant-numeric:tabular-nums}
+.curves{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.curves .cv{border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--card)}
+.curves select{width:100%;margin-top:6px;padding:5px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:.9rem}
+.curves .fb{font-size:.88rem;margin-top:4px;min-height:1.2em}
+svg text{fill:var(--mute);font-size:10px}
+.timer{font-variant-numeric:tabular-nums;font-size:1.6rem;font-weight:700}
+.pill{display:inline-block;padding:1px 9px;border-radius:99px;background:var(--line);font-size:.8rem;margin:1px}
+.tl{display:grid;grid-template-columns:90px 1fr;gap:4px 12px;font-size:.94rem}
+.tl b{color:var(--acc)}
+textarea.draft{width:100%;min-height:110px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--card);color:var(--ink);font:inherit}
+.ok{color:var(--ok);font-weight:700}.ko{color:var(--ko);font-weight:700}
+.diagram{width:100%;max-width:720px;display:block;margin:6px auto}
+.diagram text{font-size:12px;fill:var(--ink)}
+.diagram .m{fill:var(--mute);font-size:11px}
+.diagram rect,.diagram circle{stroke:var(--ink);stroke-width:1.2}
+.diagram line,.diagram path{stroke:var(--ink);stroke-width:1.3;fill:none}
+.f-acc{fill:var(--acc-soft)}.f-ok{fill:var(--ok-soft)}.f-warn{fill:var(--warn-soft)}.f-ko{fill:var(--ko-soft)}
+
+/* ---- rendu ---- */
+h1,h2{font-family:"Source Serif 4",Georgia,"Times New Roman",serif;letter-spacing:-.01em;text-wrap:balance}
+h1{font-size:2.1rem;line-height:1.15}
+h2{font-size:1.6rem;flex-wrap:wrap;line-height:1.2}
+h3{font-weight:600;text-wrap:balance}
+header.top{box-shadow:0 1px 0 var(--line);backdrop-filter:saturate(1.4)}
+header.top b{font-family:"Source Serif 4",Georgia,serif;font-size:1.05rem}
+main>section.step{max-width:900px}
+section.step{padding-top:26px;border-top:1px solid var(--line)}
+section.step:first-child{border-top:0;padding-top:4px}
+.card,.ex{box-shadow:0 1px 2px rgba(20,30,50,.05)}
+th{font-weight:600}
+nav.side a{transition:background .15s}
+nav.side a:focus-visible,.btn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.eyebrow{text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;font-weight:700;color:var(--acc);margin:0 0 4px}
+.ctx{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0 6px}
+.ctx>div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;min-width:0}
+.ctx>div>b{display:block;text-transform:uppercase;letter-spacing:.07em;font-size:.7rem;color:var(--mute);margin-bottom:3px}
+.ctx>div p{margin:0;font-size:.93rem}
+.ctx>div.exam{border-color:var(--acc);background:var(--acc-soft)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:10px 0}
+.facts>div{border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:var(--card);min-width:0}
+.facts .big{font-family:"Source Serif 4",Georgia,serif;font-size:1.5rem;font-weight:700;color:var(--acc);font-variant-numeric:tabular-nums}
+.facts small{display:block;color:var(--mute);font-size:.85rem}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.rev-q{font-weight:600;font-size:1.05rem;margin:8px 0}
+.rev-a{border-left:4px solid var(--ok);background:var(--ok-soft);padding:8px 14px;border-radius:0 8px 8px 0}
+.rev-meta{color:var(--mute);font-size:.88rem;font-variant-numeric:tabular-nums}
+@media (max-width:860px){
+ nav.side{display:flex;position:sticky;top:49px;z-index:15;height:auto;overflow-x:auto;gap:4px;padding:8px 12px;border-right:0;border-bottom:1px solid var(--line);background:var(--bg)}
+ nav.side small{display:none}
+ nav.side a{white-space:nowrap;flex:none;font-size:.86rem;padding:4px 8px}
+ .ctx{grid-template-columns:1fr}
+ h1{font-size:1.7rem}
+}
+@media (max-width:860px){.layout{grid-template-columns:1fr}nav.side{display:none}.grid2{grid-template-columns:1fr}main{padding:14px 16px 60px}}
+@media print{header.top,nav.side{display:none}.layout{display:block}details.sol{display:block}}
+</style>
+</head>
+<body>
+<header class="top">
+<b>Révision Deep Learning</b>
+<div class="pbar"><i id="pfill"></i></div><span id="ptxt">0 %</span>
+<button class="btn" id="theme" title="Thème clair ou sombre">◐</button>
+</header>
+<div class="layout">
+<nav class="side" id="nav">
+<small>Programme</small>
+<a href="#s0" data-s="0"><span class="n">0</span>Mode d'emploi</a>
+<a href="#s1" data-s="1"><span class="n">1</span>Méthodologie</a>
+<a href="#s2" data-s="2"><span class="n">2</span>Pipeline PyTorch</a>
+<a href="#s3" data-s="3"><span class="n">3</span>RNN, LSTM, GRU (TP4)</a>
+<a href="#s4" data-s="4"><span class="n">4</span>Attention, Transformer</a>
+<a href="#s5" data-s="5"><span class="n">5</span>BERT (document)</a>
+<a href="#s6" data-s="6"><span class="n">6</span>Transfer learning (TP2-3)</a>
+<a href="#s7" data-s="7"><span class="n">7</span>Stratégie des 3 phases</a>
+<small>Entraînement</small>
+<a href="#s8" data-s="8"><span class="n">8</span>Examen blanc A (BERT)</a>
+<a href="#s9" data-s="9"><span class="n">9</span>Examen blanc B (HAR)</a>
+<a href="#s10" data-s="10"><span class="n">10</span>Révision (questions)</a>
+<small>Ressources</small>
+<a href="memo-cours.html">Mémo de cours (41 fiches)</a>
+<a href="complement-tp-final.html">Complément TP final</a>
+<a href="rappel-express.html">Rappel express</a>
+</nav>
+<main>
+
+<!-- ===================================================== 0 -->
+<section class="step" id="s0" data-s="0">
+<h1>Programme de révision : TP noté de Deep Learning</h1>
+<p class="lead">Objectif : 20/20. Construit sur les TP du cours (TP1, TP2, TP4-1, TP4-2), le document BERT, le CM3 et le mail de I. Yamane. Chaque étape contient le cours utile, des exercices corrigés, un quiz noté et une liste « je sais faire » qui alimente la barre de progression.</p>
+
+
+<div class="card">
+<p class="eyebrow">L'épreuve en bref</p>
+<div class="facts">
+<div><span class="big">3 h</span><small>TP noté en salle informatique, en 5 phases. Reporté d'au moins une semaine après le 2 novembre : le 2 novembre est un TP normal.</small></div>
+<div><span class="big">50 %</span><small>Poids de cet examen final dans la note du cours. Le midterm compte 45 %, les quiz 5 %.</small></div>
+<div><span class="big">1 h</span><small>Phase 1, sur papier et sans appareil. C'est elle qui compte le plus : comprendre le problème et écrire un plan d'expériences précis.</small></div>
+<div><span class="big">IA</span><small>Autorisée seulement en phase 4 (Colab, 50 min). En phase 5 tu expliques ton code sur papier, sans aide.</small></div>
+</div>
+<p>Le principe : on te donne un problème d'apprentissage profond inédit, proche des TP. On ne te demande pas un score record. On te demande de <b>poser la bonne question</b>, de <b>concevoir une expérience qui y répond</b>, de l'exécuter, puis de <b>dire honnêtement ce qu'elle prouve</b>.</p>
+</div>
+
+<div class="card">
+<p class="eyebrow">Comment réviser avec cette page</p>
+<ol>
+<li><b>Suis les étapes dans l'ordre.</b> Chaque étape commence par un encadré de contexte (à quoi sert la notion, d'où elle vient, ce qui tombe à l'examen), puis le cours, des exercices corrigés et un quiz.</li>
+<li><b>Coche « je sais faire »</b> en bas de chaque étape seulement quand c'est vrai. La barre en haut suit ta progression ; les étapes terminées passent au vert dans le menu.</li>
+<li><b>Fais les deux examens blancs en conditions réelles</b> (étapes 8 et 9) : 1 h sur papier avec le minuteur, 50 min sur Colab avec le notebook de départ, 35 min sur papier.</li>
+<li><b>Termine chaque séance par une session de révision</b> (étape 10) : 5 questions tirées au hasard, en priorité celles que tu as marquées « à revoir ».</li>
+</ol>
+<p class="rev-meta">Ta progression, tes brouillons et tes questions « à revoir » sont enregistrés dans ce navigateur uniquement (rien n'est envoyé). <button class="btn" id="reset-all" type="button">Réinitialiser ma progression</button></p>
+</div>
+
+<div class="card">
+<p class="eyebrow">Les TP du cours, et où ils servent ici</p>
+<div class="tw"><table>
+<tr><th>TP</th><th>Ce qu'on y faisait</th><th>Utilisé dans</th></tr>
+<tr><td><b>TP1</b></td><td>Premiers pas en PyTorch : tenseurs, premiers réseaux (MLP, CNN), boucle d'entraînement écrite à la main, suivi de la loss d'entraînement, de la loss et de l'accuracy de validation à chaque epoch.</td><td>Étape 2</td></tr>
+<tr><td><b>TP2</b></td><td>CNN chats contre chiens : dropout, augmentation de données, réutilisation d'un modèle pré-entraîné par l'enseignant sur 10 classes, suivi avec TensorBoard.</td><td>Étapes 1 et 6</td></tr>
+<tr><td><b>TP3</b></td><td>GAN et GAN conditionnel. Pas dans la liste des sujets à revoir annoncée par mail : culture générale seulement.</td><td>Hors programme du TP noté</td></tr>
+<tr><td><b>TP4-1</b></td><td>Reconnaissance d'activité humaine (HAR) : fenêtres de 128 pas × 9 signaux de smartphone, 6 activités, LSTM puis couche linéaire sur le dernier état caché. Test ≈ 88,8 %.</td><td>Étapes 2 et 3, examen blanc B</td></tr>
+<tr><td><b>TP4-2</b></td><td>Nom ou verbe : chaque mot d'une phrase en vecteur GloVe 50d (pré-entraîné, figé), GRU bidirectionnel, phrases de longueur variable (pad et pack). Test ≈ 79 %.</td><td>Étapes 3 et 6</td></tr>
+<tr><td><b>Document BERT</b></td><td>Page de préparation fournie : encodeur, tokenisation WordPiece, [CLS] et [SEP], masque d'attention, pré-entraînement MLM et NSP, deux façons de fine-tuner. <b>Non consultable le jour J.</b></td><td>Étape 5, examen blanc A</td></tr>
+</table></div>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0">Ce qui est évalué (mail du 28 octobre)</h3>
+<div class="tw"><table>
+<tr><th>Phase</th><th>Durée</th><th>Support</th><th>Ce qu'il faut produire</th></tr>
+<tr><td><b>1. Analyse et plan</b> (compte le plus)</td><td>≈ 1 h</td><td>papier, sans appareil</td><td>Réponses aux questions sur le problème + plan d'expériences précis</td></tr>
+<tr><td>2. Ramassage</td><td>5 min</td><td></td><td>Tu gardes tes notes : <b>recopie ton plan</b> sur une feuille à part avant</td></tr>
+<tr><td>3. Pause, installation</td><td>10 min</td><td>machine</td><td>Colab avec GPU, connexion aux assistants IA</td></tr>
+<tr><td><b>4. Implémentation</b></td><td>≈ 50 min</td><td>Colab, web et IA autorisés</td><td>Notebook qui exécute le plan</td></tr>
+<tr><td><b>5. Synthèse</b></td><td>≈ 35 min</td><td>papier, sans appareil</td><td>Court rapport + explication de la partie principale de <b>ton</b> code</td></tr>
+</table></div>
+<p>Les critères annoncés : <b>compréhension du problème</b>, <b>précision du plan</b>, <b>expériences qui soutiennent les conclusions</b>, <b>compréhension de son propre code</b>. Les quatre sujets à revoir : document BERT, TP4 (GRU) et son code, Transformer et attention comparés aux RNN, transfer learning, méthodologie (train/val/test, comparaisons justes, variabilité entre runs, lecture des courbes).</p>
+<div class="warn">L'IA est autorisée en phase 4, mais pas en phases 1 et 5. En phase 5, tu dois expliquer ton code sans aide. Tout ce que l'IA écrit pour toi, tu dois pouvoir le réexpliquer ligne par ligne. C'est pour cela que ce programme te fait écrire et expliquer le code du TP4 toi-même.</div>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0">Planning conseillé (date exacte à confirmer, au moins une semaine après le 2 novembre)</h3>
+<div class="tl">
+<b>Séance 1</b><span>Étapes 1 et 2 : méthodologie et pipeline PyTorch (≈ 2 h). C'est la base de toute la phase 1.</span>
+<b>Séance 2</b><span>Étape 3 : TP4. Refaire les deux notebooks <b>sans regarder la solution</b>, puis l'exercice « explique chaque ligne » (≈ 2 h 30).</span>
+<b>Séance 3</b><span>Étapes 4 et 5 : attention, Transformer, document BERT. Cartes BERT jusqu'à 100 % connues (≈ 2 h).</span>
+<b>Séance 4</b><span>Étapes 6 et 7 : transfer learning, gabarits des trois phases (≈ 1 h 30).</span>
+<b>Séance 5</b><span>Examen blanc A en conditions réelles : 1 h papier, 50 min Colab, 35 min papier. Puis correction (≈ 3 h).</span>
+<b>Séance 6</b><span>Examen blanc B en conditions réelles, puis banque de questions (≈ 3 h).</span>
+<b>Veille</b><span>Cartes BERT, tableau RNN contre Transformer, gabarit de plan, rappel express. Pas de nouveau contenu.</span>
+</div>
+</div>
+
+<h3>Diagnostic de départ (8 questions)</h3>
+<p class="lead">Fais-le avant de commencer, sans tricher. Il indique les étapes sur lesquelles insister.</p>
+<div class="quiz card" data-quiz="diag"></div>
+<ul class="can" data-step="0">
+<li><input type="checkbox" data-k="0a"><span>J'ai lu le format et je connais les critères d'évaluation.</span></li>
+<li><input type="checkbox" data-k="0b"><span>J'ai fait le diagnostic et noté mes points faibles.</span></li>
+</ul>
+</section>
+
+<!-- ===================================================== 1 -->
+<section class="step" id="s1" data-s="1">
+<h2><span>1. Méthodologie expérimentale</span><span class="tag">phases 1 et 5</span></h2>
+<p class="lead">C'est ce qui distingue une note moyenne d'une excellente note : on ne note pas « mon modèle a 88 % », on note « mon expérience permet de conclure ».</p>
+<div class="ctx"><div><b>À quoi ça sert</b><p>Transformer un chiffre en conclusion. « 88 % » ne veut rien dire tant qu'on ne sait pas sur quelles données, contre quoi, et avec quelle variabilité.</p></div><div><b>D'où ça vient</b><p>La démarche expérimentale en apprentissage automatique : la validation sert à choisir, le test à mesurer une seule fois, on ne change qu'un facteur à la fois, on répète avec plusieurs seeds.</p></div><div class="exam"><b>À l'examen</b><p>Le cœur de la phase 1 (le plan) et de la phase 5 (« les expériences soutiennent-elles les conclusions ? »). Deux des quatre critères annoncés en dépendent.</p></div></div>
+
+<h3>1.1 Les trois ensembles</h3>
+<svg class="diagram" viewBox="0 0 720 120" role="img" aria-label="Découpage des données en entraînement, validation et test">
+<rect x="10" y="20" width="430" height="44" rx="6" class="f-acc"/><text x="225" y="47" text-anchor="middle">Entraînement : ajuster les poids (gradient)</text>
+<rect x="440" y="20" width="130" height="44" rx="6" class="f-warn"/><text x="505" y="40" text-anchor="middle">Validation</text><text x="505" y="56" text-anchor="middle" class="m">choisir</text>
+<rect x="570" y="20" width="140" height="44" rx="6" class="f-ko"/><text x="640" y="40" text-anchor="middle">Test</text><text x="640" y="56" text-anchor="middle" class="m">une fois, à la fin</text>
+<text x="225" y="88" text-anchor="middle" class="m">loss.backward() ici seulement</text>
+<text x="505" y="88" text-anchor="middle" class="m">epochs, lr, architecture,</text><text x="505" y="102" text-anchor="middle" class="m">early stopping, modèle final</text>
+<text x="640" y="88" text-anchor="middle" class="m">estimation non biaisée</text><text x="640" y="102" text-anchor="middle" class="m">de la généralisation</text>
+</svg>
+<div class="grid2">
+<div class="key"><b>Règle d'or.</b> Tout choix (hyperparamètre, epoch d'arrêt, modèle retenu) se fait sur la validation. Le test est regardé <b>une seule fois</b>, après avoir figé tous les choix. Sinon, le score test est optimiste : on a sélectionné sur lui.</div>
+<div class="warn"><b>Fuite de données.</b> Normaliser avec les statistiques du test, augmenter les données de validation, mettre des fenêtres d'une même personne en train et en validation (HAR : fenêtres qui se chevauchent à 50 %)... Tout ce qui fait « voir » la validation ou le test pendant l'entraînement gonfle les scores.</div>
+</div>
+<p><b>Dans TP4-1</b>, le test contient des <b>sujets jamais vus</b> (le notebook le vérifie avec <code>np.intersect1d</code> : 0 sujet commun). Un <code>random_split</code> ligne à ligne pour la validation mélange les sujets : la validation est alors <b>plus facile</b> que le test (même personne, fenêtres voisines). Un split par sujet est plus honnête. Le signaler en phase 1 est un excellent point.</p>
+
+<h3>1.2 Comparer deux modèles de façon juste</h3>
+<div class="tw"><table>
+<tr><th>Ce qui doit être identique</th><th>Pourquoi</th></tr>
+<tr><td>Mêmes splits train/val/test (même seed de split)</td><td>Sinon on compare aussi la difficulté des données</td></tr>
+<tr><td>Même prétraitement et même tokenisation</td><td>Sinon la différence peut venir de l'entrée, pas du modèle</td></tr>
+<tr><td>Même budget : epochs ou pas de gradient, et temps noté</td><td>Un modèle entraîné plus longtemps n'est pas « meilleur », il a eu plus de ressources</td></tr>
+<tr><td>Même procédure de sélection (meilleure epoch en validation pour tous)</td><td>Sinon on avantage celui dont on a choisi la meilleure epoch</td></tr>
+<tr><td>Hyperparamètres réglés avec le même effort (ou valeurs standard pour tous)</td><td>Régler 20 lr pour A et 1 pour B biaise la comparaison</td></tr>
+<tr><td>Plusieurs seeds pour chaque configuration</td><td>Voir 1.3</td></tr>
+</table></div>
+<p>Principe : <b>ne faire varier qu'un facteur à la fois</b>. Exemple du document BERT : « pré-entraîné contre from scratch » doit utiliser <b>la même architecture</b>. Sinon, on ne sait pas si la différence vient du pré-entraînement ou de l'architecture.</p>
+
+<h3>1.3 Variabilité entre runs</h3>
+<p>Deux entraînements du même modèle donnent des scores différents, à cause de l'initialisation aléatoire des poids, de l'ordre des mini-batchs, du dropout, et éventuellement du tirage du sous-échantillon. On répète donc chaque configuration avec $k$ seeds (3 à 5) et on rapporte</p>
+<p>$$\bar a=\frac1k\sum_{s=1}^k a_s,\qquad \hat\sigma=\sqrt{\frac1{k-1}\sum_{s=1}^k (a_s-\bar a)^2}.$$</p>
+<div class="key"><b>Règle pratique.</b> Si l'écart entre deux moyennes est petit devant les écarts-types (par exemple inférieur à un écart-type), on ne conclut pas : « pas de différence détectable avec 3 runs ». Si les intervalles $\bar a\pm\hat\sigma$ sont nettement séparés et le sens est le même pour toutes les seeds, on conclut avec prudence. On ne dit jamais « A est meilleur que B » sur un seul run.</div>
+<p><code>torch.manual_seed(s)</code> sert à la <b>reproductibilité</b> (rejouer un run). Ce n'est pas une façon d'éliminer la variabilité : la variabilité est une propriété réelle de la méthode, on la mesure.</p>
+
+<h3>1.4 Lire les courbes d'entraînement : exercice interactif</h3>
+<p class="lead">Pour chaque figure (bleu : loss d'entraînement, orange : loss de validation, en fonction des epochs), choisis le diagnostic.</p>
+<div class="curves" id="curves"></div>
+<p style="margin-top:8px"><span id="curve-score"></span></p>
+
+<h3>1.5 Exercices</h3>
+<div class="ex"><div class="h">Ex 1.1 <span class="lvl l1">base</span> Trois seeds</div>
+<p>Accuracy validation sur 3 seeds. Modèle A : 0,861 ; 0,842 ; 0,877. Modèle B : 0,872 ; 0,851 ; 0,834. Calcule moyennes et écarts-types. Peut-on dire que A est meilleur ?</p>
+<details class="sol"><summary>Correction</summary>
+<p>A : $\bar a=0{,}860$, écarts $0{,}001;-0{,}018;0{,}017$, somme des carrés $6{,}14\cdot10^{-4}$, divisée par 2 : $3{,}07\cdot10^{-4}$, donc $\hat\sigma\approx0{,}018$.</p>
+<p>B : $\bar a\approx0{,}852$, somme des carrés $\approx7{,}25\cdot10^{-4}$, $\hat\sigma\approx0{,}019$.</p>
+<p>Écart des moyennes : 0,008, soit moins de la moitié d'un écart-type. <b>On ne peut pas conclure</b>. B bat même A sur la seed 0. Phrase de rapport : « Les deux modèles sont indiscernables avec 3 runs (0,860 ± 0,018 contre 0,852 ± 0,019). »</p></details></div>
+
+<div class="ex"><div class="h">Ex 1.2 <span class="lvl l2">phase 1 type</span> Trouve les 6 erreurs du protocole</div>
+<p>« On compare un LSTM et un Transformer sur HAR. On normalise les données avec la moyenne et l'écart-type de tout le jeu (train et test). On entraîne le LSTM 10 epochs et le Transformer 30 epochs, car il est plus gros. On choisit le learning rate de chaque modèle d'après l'accuracy test. On fait un seul run par modèle. Le Transformer obtient 91,2 % contre 90,8 % : le Transformer est meilleur. On rapporte le score de la dernière epoch. »</p>
+<details class="sol"><summary>Correction</summary><ol>
+<li>Normalisation avec le test : <b>fuite</b>. Il faut utiliser les statistiques du train seulement.</li>
+<li>Budgets différents (10 contre 30 epochs) : comparaison injuste. Il faut le même nombre d'epochs, ou le même temps, ou une sélection par early stopping pour les deux.</li>
+<li>Learning rate choisi sur le <b>test</b> : le test devient un ensemble de validation, et le score final est optimiste.</li>
+<li>Un seul run : la variabilité n'est pas mesurée.</li>
+<li>0,4 point d'écart sur un run : conclusion non soutenue.</li>
+<li>Dernière epoch plutôt que meilleure epoch en validation : mauvaise procédure si le modèle surapprend, et elle doit être la même pour les deux modèles.</li>
+</ol>Bonus : pas de split de validation par sujet (voir 1.1).</details></div>
+
+<div class="ex"><div class="h">Ex 1.3 <span class="lvl l2">raisonnement</span> Validation plus basse que train en loss ?</div>
+<p>Au début de l'entraînement, avec du dropout, la loss de validation est <b>inférieure</b> à la loss d'entraînement. Bug ?</p>
+<details class="sol"><summary>Correction</summary><p>Pas forcément. (1) Le dropout est actif en <code>model.train()</code> et coupé en <code>model.eval()</code> : le réseau évalué en validation est « complet », donc meilleur. (2) La loss d'entraînement est une moyenne <b>sur l'epoch</b>, pendant que les poids s'améliorent, alors que la loss de validation est calculée <b>à la fin</b> de l'epoch. Les deux effets donnent une validation plus basse au début. C'est normal.</p></details></div>
+
+<div class="ex"><div class="h">Ex 1.4 <span class="lvl l3">plan</span> Budget de 50 minutes</div>
+<p>Un run de ton modèle dure 2 min sur Colab. Tu veux comparer 3 modèles, 3 tailles de données, 3 seeds. Est-ce faisable ? Que fais-tu sinon ?</p>
+<details class="sol"><summary>Correction</summary><p>3 × 3 × 3 = 27 runs × 2 min = 54 min de calcul, plus le code et le debug : <b>infaisable</b>. Priorités : (1) un run de test très court pour vérifier que tout tourne ; (2) la comparaison principale avec 3 seeds sur une seule taille (9 runs, 18 min) ; (3) si le temps le permet, les autres tailles avec 2 seeds. À écrire dans le plan : « ordre d'exécution par priorité, et ce que je conclurai si seule l'étape 2 est faite ». Un plan qui prévoit sa version réduite est un plan précis.</p></details></div>
+
+<div class="quiz card" data-quiz="meth"></div>
+<ul class="can" data-step="1">
+<li><input type="checkbox" data-k="1a"><span>Je sais expliquer le rôle des trois ensembles et ce qu'est une fuite.</span></li>
+<li><input type="checkbox" data-k="1b"><span>Je sais lister les conditions d'une comparaison juste.</span></li>
+<li><input type="checkbox" data-k="1c"><span>Je sais calculer et interpréter une moyenne ± écart-type sur des seeds.</span></li>
+<li><input type="checkbox" data-k="1d"><span>J'ai 100 % au diagnostic des courbes.</span></li>
+</ul>
+</section>
+
+<!-- ===================================================== 2 -->
+<section class="step" id="s2" data-s="2">
+<h2><span>2. Pipeline PyTorch (TP1 et TP4)</span><span class="tag">phases 4 et 5</span></h2>
+<p class="lead">Le design du cours : un modèle « entraînable » (forward, configure_optimizers, training_step, validation_step) et un Trainer qui fait la boucle.</p>
+<div class="ctx"><div><b>À quoi ça sert</b><p>Tout le code de la phase 4 réutilise les mêmes briques : Dataset, DataLoader, modèle, loss, optimiseur, boucle d'entraînement et d'évaluation.</p></div><div><b>D'où ça vient</b><p>TP1 (boucle écrite à la main) puis TP4, qui range le code en une classe « entraînable » (forward, training_step, validation_step) et un Trainer.</p></div><div class="exam"><b>À l'examen</b><p>En phase 5, tu dois expliquer ton code sans machine : l'ordre zero_grad, backward, step, le rôle de model.train() et model.eval(), et la forme de chaque tenseur.</p></div></div>
+
+<h3>2.1 Les briques et leur rôle</h3>
+<div class="tw"><table>
+<tr><th>Objet</th><th>Rôle</th><th>Piège classique</th></tr>
+<tr><td><code>Dataset</code></td><td><code>__len__</code> renvoie le nombre d'exemples, <code>__getitem__(idx)</code> renvoie <b>un</b> exemple (entrée, label)</td><td>Charger tout le jeu dans <code>__getitem__</code></td></tr>
+<tr><td><code>DataLoader</code></td><td>Itère sur le dataset par mini-batchs, mélange si <code>shuffle=True</code>, empile les exemples (collate)</td><td>Séquences de longueurs variables : impossible d'empiler. Dans TP4-2, <code>collate_fn=lambda x: x</code> renvoie une liste</td></tr>
+<tr><td><code>nn.Module</code></td><td>Couches dans <code>__init__</code>, calcul dans <code>forward</code>. <code>model(x)</code> appelle <code>forward</code></td><td>Oublier <code>super().__init__()</code></td></tr>
+<tr><td><code>CrossEntropyLoss</code></td><td>Prend des <b>logits</b> (pas de softmax avant) et des labels <code>int64</code> de 0 à C−1</td><td>Labels HAR de 1 à 6 : il faut <code>y - 1</code></td></tr>
+<tr><td><code>BCEWithLogitsLoss</code></td><td>Binaire : 1 logit par exemple, labels <code>float</code> 0/1. Prédiction : <code>logit &gt; 0</code></td><td>Mettre une sigmoïde avant (elle est déjà dedans)</td></tr>
+<tr><td><code>model.train()</code> / <code>model.eval()</code></td><td>Active ou coupe dropout et batchnorm</td><td>Évaluer en mode train</td></tr>
+<tr><td><code>torch.no_grad()</code></td><td>Pas de graphe de calcul : validation plus rapide, moins de mémoire</td><td>L'oublier en validation</td></tr>
+<tr><td><code>.to(device)</code></td><td>Copie sur GPU (<code>"cuda"</code>). Modèle <b>et</b> données sur le même device</td><td>« Expected all tensors to be on the same device »</td></tr>
+</table></div>
+
+<h3>2.2 L'ordre d'une itération</h3>
+<svg class="diagram" viewBox="0 0 720 70" role="img" aria-label="Ordre d'une itération d'entraînement">
+<g><rect x="5" y="15" width="120" height="38" rx="6" class="f-acc"/><text x="65" y="38" text-anchor="middle">forward : pred</text></g>
+<path d="M125 34h20"/><g><rect x="145" y="15" width="120" height="38" rx="6" class="f-acc"/><text x="205" y="38" text-anchor="middle">loss(pred, y)</text></g>
+<path d="M265 34h20"/><g><rect x="285" y="15" width="135" height="38" rx="6" class="f-warn"/><text x="352" y="38" text-anchor="middle">zero_grad()</text></g>
+<path d="M420 34h20"/><g><rect x="440" y="15" width="135" height="38" rx="6" class="f-warn"/><text x="507" y="38" text-anchor="middle">loss.backward()</text></g>
+<path d="M575 34h20"/><g><rect x="595" y="15" width="120" height="38" rx="6" class="f-ok"/><text x="655" y="38" text-anchor="middle">optimizer.step()</text></g>
+</svg>
+<p><code>zero_grad</code> remet les gradients à zéro, car PyTorch les <b>accumule</b> par défaut. <code>backward</code> calcule $\partial L/\partial\theta$ par rétropropagation (autograd). <code>step</code> applique la règle de l'optimiseur, par exemple $\theta\leftarrow\theta-\eta\nabla_\theta L$ pour SGD. C'est le QCM 17 du midterm 2.</p>
+
+<h3>2.3 Calculer les formes : convolutions</h3>
+<p>$$H_{out}=\left\lfloor\frac{H_{in}+2p-k}{s}\right\rfloor+1$$</p>
+<div class="ex"><div class="h">Ex 2.1 <span class="lvl l2">midterm 2, Q2-3</span> L'erreur de l'IA</div>
+<p>Entrée 1 × 28 × 28 (MNIST), <code>Conv2d(1, 4, kernel_size=5, stride=1, padding=0)</code>, <code>MaxPool2d(2, 2)</code>, <code>Flatten</code>, <code>Linear(123, 64)</code>. Erreur : <code>mat1 and mat2 shapes cannot be multiplied (64x576 and 123x64)</code>. Explique et corrige.</p>
+<details class="sol"><summary>Correction</summary><p>Conv : $28-5+1=24$, donc 4 × 24 × 24. Pool : 4 × 12 × 12. Flatten : $4\times12\times12=576$ features par image, et 64 est la taille du batch. La couche attend 123 entrées : il faut <code>nn.Linear(576, 64)</code>. Autre bug : <code>super(CNN0, self).__init__()</code> doit être <code>super().__init__()</code> (ou <code>super(CNN_AI, self)</code>). Version robuste : <code>nn.LazyLinear(64)</code>, ou calculer la taille avec un tenseur factice.</p></details></div>
+<div class="ex"><div class="h">Ex 2.2 <span class="lvl l1">midterm 1</span> dtype</div>
+<p><code>torch.from_numpy(np.array([[1,2],[3,4]]))</code> est <code>int64</code>, <code>torch.tensor([[0.1,0.2],[0.3,0.4]])</code> est <code>float32</code>. Le produit <code>@</code> échoue. Correction en une ligne ?</p>
+<details class="sol"><summary>Correction</summary><p>Les deux opérandes doivent avoir le même dtype : <code>torch_tensor1.to(torch.float32) @ torch_tensor2</code> (ou <code>.float()</code>). C'est pour la même raison que TP4-1 fait <code>torch.from_numpy(X_train).to(dtype=torch.float32)</code> : numpy produit du <code>float64</code>, alors que les poids sont en <code>float32</code>.</p></details></div>
+<div class="ex"><div class="h">Ex 2.3 <span class="lvl l2">débogage</span> Six bugs à trouver</div>
+<pre><code>class Net(nn.Module):
+    def __init__(self):
+        self.lstm = nn.LSTM(9, 100)                     # (a)
+        self.linear = nn.Linear(100, 6)
+    def forward(self, x):                               # x : (batch, 128, 9)
+        out, h_n = self.lstm(x)                         # (b)
+        return torch.softmax(self.linear(h_n), dim=1)   # (c)
+
+for X, y in train_dataloader:
+    pred = model(X)
+    loss = loss_fn(pred, y)          # y dans {1,...,6}  (d)
+    loss.backward()
+    optimizer.step()                 # (e)
+acc = (model(X_test).argmax(1) == y_test).float().mean()   # (f)</code></pre>
+<details class="sol"><summary>Correction</summary><ol type="a">
+<li>Il manque <code>super().__init__()</code>. Et <code>nn.LSTM(9, 100)</code> attend (L, batch, 9) par défaut : il faut <code>batch_first=True</code>.</li>
+<li>Le LSTM renvoie <code>output, (h_n, c_n)</code> : il faut écrire <code>out, (h_n, c_n) = ...</code></li>
+<li><code>h_n</code> a la forme (1, batch, 100) : il faut prendre <code>h_n[-1]</code>. Et pas de softmax avant <code>CrossEntropyLoss</code>, qui attend des logits.</li>
+<li>Labels de 1 à 6 : il faut <code>y - 1</code>, et le type <code>int64</code>.</li>
+<li>Il manque <code>optimizer.zero_grad()</code> : les gradients s'accumulent d'un batch à l'autre.</li>
+<li>Pas de <code>model.eval()</code> ni de <code>torch.no_grad()</code>. Si c'est fait en cours d'entraînement pour choisir un modèle, c'est aussi une utilisation du test.</li>
+</ol></details></div>
+
+<div class="quiz card" data-quiz="pt"></div>
+<ul class="can" data-step="2">
+<li><input type="checkbox" data-k="2a"><span>Je sais écrire de mémoire un Dataset, un DataLoader et la boucle d'entraînement.</span></li>
+<li><input type="checkbox" data-k="2b"><span>Je sais calculer les tailles de sortie d'une convolution et corriger un Linear mal dimensionné.</span></li>
+<li><input type="checkbox" data-k="2c"><span>Je connais les attentes de CrossEntropyLoss et de BCEWithLogitsLoss.</span></li>
+</ul>
+</section>
+
+<!-- ===================================================== 3 -->
+<section class="step" id="s3" data-s="3">
+<h2><span>3. RNN, LSTM, GRU : le TP4</span><span class="tag">explicitement demandé</span></h2>
+<p class="lead">« Review TP4 and its code: you should be able to read it and explain what each step does. »</p>
+<div class="ctx"><div><b>À quoi ça sert</b><p>Traiter une séquence pas à pas, avec un état caché qui résume ce qui a été lu. LSTM et GRU ajoutent des portes pour garder l'information plus longtemps.</p></div><div><b>D'où ça vient</b><p>TP4-1 (HAR, LSTM sur une série temporelle) et TP4-2 (nom ou verbe, GRU bidirectionnel sur des phrases de longueur variable).</p></div><div class="exam"><b>À l'examen</b><p>Demandé explicitement dans le mail : « review TP4 and its code ». Base de l'examen blanc B, et modèle de référence naturel face à un Transformer.</p></div></div>
+
+<h3>3.1 La récurrence</h3>
+<svg class="diagram" viewBox="0 0 720 150" role="img" aria-label="RNN déplié dans le temps avec poids partagés">
+<g id="u"></g>
+<text x="20" y="80">h⁽⁰⁾=0</text>
+<path d="M70 75h40"/>
+<rect x="110" y="55" width="70" height="40" rx="6" class="f-acc"/><text x="145" y="80" text-anchor="middle">f_θ</text>
+<path d="M180 75h50"/>
+<rect x="230" y="55" width="70" height="40" rx="6" class="f-acc"/><text x="265" y="80" text-anchor="middle">f_θ</text>
+<path d="M300 75h50"/>
+<text x="360" y="80">⋯</text>
+<path d="M385 75h45"/>
+<rect x="430" y="55" width="70" height="40" rx="6" class="f-acc"/><text x="465" y="80" text-anchor="middle">f_θ</text>
+<path d="M500 75h40"/>
+<rect x="540" y="55" width="80" height="40" rx="6" class="f-ok"/><text x="580" y="80" text-anchor="middle">Linear</text>
+<path d="M620 75h30"/><text x="655" y="80">6 logits</text>
+<path d="M145 130v-35"/><text x="145" y="145" text-anchor="middle">x⁽¹⁾</text>
+<path d="M265 130v-35"/><text x="265" y="145" text-anchor="middle">x⁽²⁾</text>
+<path d="M465 130v-35"/><text x="465" y="145" text-anchor="middle">x⁽¹²⁸⁾</text>
+<text x="205" y="68" class="m">h⁽¹⁾</text><text x="325" y="68" class="m">h⁽²⁾</text><text x="505" y="50" class="m">h⁽¹²⁸⁾ = h_n</text>
+<text x="300" y="25" text-anchor="middle" class="m">même fonction f_θ (mêmes poids) à chaque pas de temps</text>
+</svg>
+<p>$$h^{(t)}=f_\theta\big(x^{(t)},h^{(t-1)}\big),\qquad\text{RNN simple : } h^{(t)}=\tanh\big(W_{ih}x^{(t)}+b_{ih}+W_{hh}h^{(t-1)}+b_{hh}\big).$$</p>
+<p>Les poids sont <b>partagés dans le temps</b> (QCM 3 du midterm 1). Le gradient traverse un produit de $T$ jacobiennes : il s'évanouit ou explose sur les longues séquences. Les <b>portes</b> du LSTM et du GRU créent un chemin presque additif qui laisse passer l'information et le gradient. Et le calcul est <b>séquentiel</b> : on ne peut pas calculer $h^{(t)}$ avant $h^{(t-1)}$ (QCM 22 du midterm 2).</p>
+
+<h3>3.2 GRU (convention PyTorch)</h3>
+<p>$$\begin{aligned} r_t&=\sigma(W_{ir}x_t+b_{ir}+W_{hr}h_{t-1}+b_{hr}) &&\text{porte de reset}\\ z_t&=\sigma(W_{iz}x_t+b_{iz}+W_{hz}h_{t-1}+b_{hz}) &&\text{porte de mise à jour}\\ n_t&=\tanh\big(W_{in}x_t+b_{in}+r_t\odot(W_{hn}h_{t-1}+b_{hn})\big) &&\text{candidat}\\ h_t&=(1-z_t)\odot n_t+z_t\odot h_{t-1} &&\text{mélange} \end{aligned}$$</p>
+<p>Si $z_t\approx1$, on <b>recopie</b> $h_{t-1}$ : l'information traverse le temps sans être écrasée. Par rapport au LSTM : les portes oubli et entrée sont fusionnées en une seule porte $z$, et il n'y a plus d'état de cellule $c_t$ séparé. Donc 3 blocs de poids au lieu de 4, et en PyTorch <code>nn.GRU</code> renvoie <code>(output, h_n)</code> alors que <code>nn.LSTM</code> renvoie <code>(output, (h_n, c_n))</code>.</p>
+<div class="tw"><table>
+<tr><th>Couche (entrée $D$, cachée $H$)</th><th>Paramètres</th><th>Exemple $D=9$, $H=100$</th></tr>
+<tr><td>RNN</td><td>$HD+H^2+2H$</td><td>11 100</td></tr>
+<tr><td>GRU</td><td>$3(HD+H^2+2H)$</td><td>33 300</td></tr>
+<tr><td>LSTM</td><td>$4(HD+H^2+2H)$</td><td>44 400</td></tr>
+<tr><td>GRU bidirectionnel ($D=50$, $H=100$, TP4-2)</td><td>$2\times3(HD+H^2+2H)$</td><td>91 200</td></tr>
+<tr><td>Linear(100, 6)</td><td>$100\times6+6$</td><td>606</td></tr>
+</table></div>
+<p class="lead">(Valeurs vérifiées avec PyTorch. Le « 2H » vient des deux biais $b_{i\cdot}$ et $b_{h\cdot}$ de PyTorch.)</p>
+
+<h3>3.3 Formes des sorties : à savoir par cœur</h3>
+<div class="tw"><table>
+<tr><th>Appel (batch_first=True, entrée (B, L, D))</th><th>output</th><th>h_n</th></tr>
+<tr><td><code>nn.GRU(D, H)</code></td><td>(B, L, H) : tous les états cachés</td><td>(1, B, H) : dernier état</td></tr>
+<tr><td><code>nn.GRU(D, H, num_layers=2, bidirectional=True)</code></td><td>(B, L, 2H) : avant et arrière concaténés</td><td>(4, B, H) : couches × directions</td></tr>
+</table></div>
+<ul>
+<li>Unidirectionnel sans padding : <code>output[:, -1] == h_n[-1]</code> (vérifié).</li>
+<li>Bidirectionnel : <code>h_n[-2]</code> = avant, dernière couche, après le dernier pas ; <code>h_n[-1]</code> = arrière, dernière couche, après avoir lu jusqu'au <b>premier</b> pas, donc égal à <code>output[:, 0, H:]</code>.</li>
+<li><code>batch_first</code> ne change <b>pas</b> la forme de <code>h_n</code> (toujours couches en premier).</li>
+</ul>
+
+<h3>3.4 TP4-1 et TP4-2 : ce qui diffère et pourquoi</h3>
+<div class="tw"><table>
+<tr><th></th><th>TP4-1 : activité humaine</th><th>TP4-2 : nom ou verbe</th></tr>
+<tr><td>Entrée</td><td>Série 128 × 9 (accéléro, gyro, accélération totale), longueur fixe</td><td>Phrase de longueur variable, chaque mot en vecteur GloVe 50d (pré-entraîné, figé)</td></tr>
+<tr><td>Sortie</td><td>Une classe parmi 6 pour toute la séquence</td><td>Verbe ou non pour <b>un mot</b> de la phrase</td></tr>
+<tr><td>Réseau</td><td>LSTM(9, 100), puis Linear(100, 6) sur <code>h_n[-1]</code></td><td>GRU bidirectionnel(50, 100), puis Linear(200, 1) sur l'état <b>du mot visé</b></td></tr>
+<tr><td>Pourquoi</td><td>Après le dernier pas, $h_n$ résume toute la fenêtre</td><td>Pour savoir si « flies » est un verbe, il faut le contexte à gauche <b>et</b> à droite</td></tr>
+<tr><td>Loss</td><td><code>CrossEntropyLoss</code>, labels <code>y - 1</code> en int64</td><td><code>BCEWithLogitsLoss</code>, labels float, prédiction <code>pred &gt; 0</code></td></tr>
+<tr><td>Batch</td><td>Tenseurs empilés, <code>batch_size=8</code></td><td>Liste Python (<code>collate_fn=lambda x: x</code>), puis pad, pack, GRU, unpack</td></tr>
+<tr><td>Résultat solution</td><td>Test ≈ 88,8 %</td><td>Test ≈ 79 % ; surapprentissage après 5 ou 6 epochs (loss val remonte)</td></tr>
+</table></div>
+<div class="note"><b>Lien avec BERT.</b> TP4-2 utilise déjà du transfer learning : GloVe est un embedding pré-entraîné sur Wikipedia, mais il est <b>non contextuel</b> (un seul vecteur pour « flies », quel que soit le sens). Le GRU bidirectionnel le rend contextuel. BERT, lui, fournit directement un vecteur contextuel par token, bidirectionnel lui aussi, grâce à l'attention. Excellente phrase de phase 1.</div>
+
+<h3>3.5 Explique chaque ligne : clique sur une ligne</h3>
+<div class="card codex" id="codex"></div>
+<div class="card" id="codex-exp"><i>Clique sur une ligne du code ci-dessus.</i></div>
+
+<h3>3.6 Exercices</h3>
+<div class="ex"><div class="h">Ex 3.1 <span class="lvl l1">base</span> Écrire le modèle de TP4-1 en GRU, de mémoire</div>
+<details class="sol"><summary>Correction</summary><pre><code>class GRUNetwork(nn.Module):
+    def __init__(self, n_channels, n_classes, n_hidden=100):
+        super().__init__()
+        self.gru = nn.GRU(n_channels, n_hidden, batch_first=True)
+        self.linear = nn.Linear(n_hidden, n_classes)
+        self.loss_fn_mean = nn.CrossEntropyLoss(reduction='mean')
+        self.loss_fn_sum = nn.CrossEntropyLoss(reduction='sum')
+
+    def forward(self, x):            # (B, 128, 9)
+        _, h_n = self.gru(x)         # h_n : (1, B, 100) ; pas de c_n
+        return self.linear(h_n[-1])  # (B, 6) logits
+    # configure_optimizers, training_step, validation_step identiques au LSTM</code></pre>
+<p>Pourquoi <code>reduction='sum'</code> en validation : on additionne les pertes de tous les batchs, puis on divise par la taille du dataset. On obtient la moyenne exacte, même si le dernier batch est plus petit.</p></details></div>
+<div class="ex"><div class="h">Ex 3.2 <span class="lvl l2">compréhension</span> Pourquoi pack_padded_sequence ?</div>
+<p>Dans TP4-2, que se passerait-il si on donnait au GRU le tenseur paddé sans le « packer » ?</p>
+<details class="sol"><summary>Correction</summary><p>Le GRU traiterait les zéros de padding comme de vrais mots. Dans le sens arrière, il commencerait par lire les zéros de fin : les états cachés des vrais mots dépendraient de la quantité de padding, donc de la composition du batch. Le packing transmet les longueurs, et le GRU s'arrête au dernier vrai token de chaque phrase. C'est exactement le rôle du <b>masque d'attention</b> chez BERT : « les vecteurs des vrais tokens ne dépendent pas de la quantité de padding ».</p></details></div>
+<div class="ex"><div class="h">Ex 3.3 <span class="lvl l2">compréhension</span> Lire la courbe de TP4-2</div>
+<p>Loss train : 0,55 → 0,18 en 10 epochs. Loss val : 0,50 au minimum vers l'epoch 5, puis 0,55 à 0,60. Accuracy val : 70 % → 76-79 %, puis plateau bruité. Diagnostic et deux remèdes ?</p>
+<details class="sol"><summary>Correction</summary><p>Surapprentissage à partir de l'epoch 5 ou 6 : le modèle continue d'apprendre le train mais généralise moins bien. Remèdes : early stopping (garder les poids de la meilleure epoch en validation) ; régularisation (dropout entre le GRU et le Linear, weight decay) ; modèle plus petit. Remarque : l'accuracy est plus bruitée que la loss, car elle ne dépend que du signe de la décision, et un petit changement de poids peut faire basculer plusieurs exemples proches du seuil.</p></details></div>
+<div class="ex"><div class="h">Ex 3.4 <span class="lvl l3">défi</span> Combien d'opérations séquentielles ?</div>
+<p>Pour une séquence de longueur $L=128$ et 2 couches, combien d'étapes de calcul <b>ne peuvent pas</b> être parallélisées dans un GRU ? Et dans un encodeur Transformer à 2 couches ?</p>
+<details class="sol"><summary>Correction</summary><p>GRU : $L$ pas par couche, qui dépendent chacun du précédent. On peut pipeliner les couches, mais il reste au moins $L+1$ étapes séquentielles, et $2L$ sans pipeline. Transformer : $O(1)$ par couche, soit 2 étapes, car toutes les positions sont calculées en même temps par des produits matriciels. En contrepartie, le coût est en $O(L^2 d)$ par couche, contre $O(L d^2)$ pour le RNN.</p></details></div>
+
+<div class="quiz card" data-quiz="rnn"></div>
+<ul class="can" data-step="3">
+<li><input type="checkbox" data-k="3a"><span>J'ai refait TP4-1 (LSTM, puis GRU) sans regarder la solution.</span></li>
+<li><input type="checkbox" data-k="3b"><span>J'ai refait TP4-2 et je sais expliquer pad, pack, unpack et le choix de l'état du mot visé.</span></li>
+<li><input type="checkbox" data-k="3c"><span>Je connais les formes de output et h_n, unidirectionnel et bidirectionnel.</span></li>
+<li><input type="checkbox" data-k="3d"><span>Je sais écrire les équations du GRU et compter ses paramètres.</span></li>
+</ul>
+</section>
+
+<!-- ===================================================== 4 -->
+<section class="step" id="s4" data-s="4">
+<h2><span>4. Attention et Transformer (CM3)</span><span class="tag">à comparer aux RNN</span></h2>
+<div class="ctx"><div><b>À quoi ça sert</b><p>Laisser chaque position aller chercher directement l'information dans toutes les autres, en parallèle, au lieu de la faire transiter par un état séquentiel.</p></div><div><b>D'où ça vient</b><p>Le CM3 et l'article « Attention is all you need » (2017). C'est la brique de BERT (encodeur) et de GPT (décodeur, avec masque causal).</p></div><div class="exam"><b>À l'examen</b><p>Question type : comparer Transformer et RNN (parallélisme, dépendances longues, coût quadratique en longueur, besoin d'un encodage de position).</p></div></div>
+
+<h3>4.1 L'idée : un dictionnaire flou</h3>
+<p>Le CM3 utilise l'analogie de la recherche web : la <b>requête</b> (query) correspond aux mots tapés, les <b>clés</b> (keys) aux titres des pages, les <b>valeurs</b> (values) au contenu des pages. L'attention renvoie une moyenne des valeurs, pondérée par la pertinence de chaque clé pour la requête :</p>
+<p>$$\mathrm{Attention}(Q,K,V)=\mathrm{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}+M\right)V,\qquad Q=XW_Q,\;K=XW_K,\;V=XW_V.$$</p>
+<p>Chaque ligne $i$ du softmax est une distribution de probabilité sur les positions $j$ : $\alpha_{ij}\ge0$ et $\sum_j\alpha_{ij}=1$. La sortie en $i$ vaut $\sum_j\alpha_{ij}v_j$. Le masque $M$ vaut $0$ (autorisé) ou $-\infty$ (interdit), ce qui donne $\alpha_{ij}=0$.</p>
+<ul>
+<li><b>$\sqrt{d_k}$</b> : si les composantes sont de variance 1, $q\cdot k$ a une variance $d_k$. Sans division, le softmax sature (presque un seul 1, le reste à 0) et les gradients deviennent minuscules.</li>
+<li><b>Self-attention</b> : $Q$, $K$, $V$ viennent de la même séquence (encodeur, et décodeur sur sa propre sortie).</li>
+<li><b>Cross-attention</b> : $Q$ vient du décodeur, $K=V$ de la sortie de l'encodeur (le contexte).</li>
+<li><b>Masque causal</b> : $\alpha_{ij}=0$ si $j&gt;i$. Une position ne voit que le passé. Avec le teacher forcing (entrée décalée, ShiftR), toutes les positions s'entraînent <b>en parallèle</b> sans tricher.</li>
+<li><b>Masque de padding</b> : $\alpha_{ij}=0$ si $j$ est du padding (cas de BERT).</li>
+<li><b>Multi-head</b> : $h$ attentions en parallèle, de dimension $d/h$ chacune, concaténées puis projetées. Chaque tête peut se spécialiser (syntaxe, coréférence, etc.).</li>
+</ul>
+
+<h3>4.2 Calculateur d'attention interactif</h3>
+<p class="lead">Trois tokens, dimension 2. Modifie les requêtes, les clés et les valeurs, et active les masques. Le calcul est refait en direct.</p>
+<div class="card att" id="att"></div>
+
+<h3>4.3 Pourquoi un encodage de position</h3>
+<p>Sans encodage de position, la self-attention est <b>équivariante par permutation</b> : si on permute les tokens d'entrée, les sorties sont permutées de la même façon. Le modèle voit alors un <b>ensemble</b>, pas une séquence (CM3 : « séquence → ensemble de paires (token, position) »). On ajoute donc à chaque token un vecteur de position : sinusoïdal (Vaswani) ou appris (BERT). Exemple : sans position, « le chien mord l'homme » et « l'homme mord le chien » ont le même vecteur [CLS].</p>
+
+<h3>4.4 RNN contre Transformer : le tableau à savoir</h3>
+<div class="tw"><table>
+<tr><th></th><th>RNN, LSTM, GRU</th><th>Transformer (attention)</th></tr>
+<tr><td>Vision de la séquence</td><td>Ordre implicite : un pas après l'autre</td><td>Ensemble de (token, position) : l'ordre vient de l'encodage de position</td></tr>
+<tr><td>Entraînement</td><td>Séquentiel : $h_t$ attend $h_{t-1}$</td><td>Parallèle sur toutes les positions (GPU)</td></tr>
+<tr><td>Chemin entre deux tokens éloignés de $k$</td><td>$k$ pas : l'information se dilue, le gradient s'évanouit</td><td>1 pas : connexion directe (champ récepteur global dès la 1re couche)</td></tr>
+<tr><td>Coût par couche</td><td>$O(L\,d^2)$</td><td>$O(L^2 d)$ : la matrice d'attention est $L\times L$</td></tr>
+<tr><td>Mémoire de la longueur</td><td>Aucune limite structurelle</td><td>Longueur maximale fixée par les positions (512 pour BERT)</td></tr>
+<tr><td>Biais inductif</td><td>Fort : localité, ordre, récurrence</td><td>Faible : doit tout apprendre, donc demande plus de données ou du pré-entraînement</td></tr>
+<tr><td>Interprétabilité</td><td>États cachés difficiles à lire</td><td>Poids d'attention lisibles (avec prudence)</td></tr>
+<tr><td>Petits jeux de données</td><td>Souvent compétitif</td><td>From scratch : souvent moins bon. Pré-entraîné : excellent</td></tr>
+</table></div>
+<div class="key"><b>Conséquence pour le TP.</b> « Transformer from scratch contre GRU » sur peu de données : on s'attend à ce que le GRU soit au moins aussi bon (biais inductif utile). « Transformer pré-entraîné contre GRU » : on s'attend à ce que le pré-entraîné gagne, surtout quand il y a peu de labels. Ces deux phrases sont des <b>hypothèses</b> à vérifier, pas des certitudes. Le plan doit dire comment l'expérience les confirmera ou les infirmera.</div>
+
+<h3>4.5 Les trois familles</h3>
+<svg class="diagram" viewBox="0 0 720 150" role="img" aria-label="Encodeur seul, décodeur seul et encodeur-décodeur">
+<rect x="10" y="20" width="220" height="110" rx="10" class="f-acc"/><text x="120" y="44" text-anchor="middle" font-weight="700">Encodeur seul : BERT</text><text x="120" y="66" text-anchor="middle" class="m">attention bidirectionnelle</text><text x="120" y="84" text-anchor="middle" class="m">1 vecteur par token</text><text x="120" y="102" text-anchor="middle" class="m">comprendre, classifier</text><text x="120" y="120" text-anchor="middle" class="m">pré-entraînement : MLM + NSP</text>
+<rect x="250" y="20" width="220" height="110" rx="10" class="f-warn"/><text x="360" y="44" text-anchor="middle" font-weight="700">Décodeur seul : GPT</text><text x="360" y="66" text-anchor="middle" class="m">masque causal</text><text x="360" y="84" text-anchor="middle" class="m">prédire le token suivant</text><text x="360" y="102" text-anchor="middle" class="m">générer du texte</text><text x="360" y="120" text-anchor="middle" class="m">pré-entraînement : next token</text>
+<rect x="490" y="20" width="220" height="110" rx="10" class="f-ok"/><text x="600" y="44" text-anchor="middle" font-weight="700">Encodeur-décodeur</text><text x="600" y="66" text-anchor="middle" class="m">Vaswani 2017, CM3</text><text x="600" y="84" text-anchor="middle" class="m">self + cross-attention</text><text x="600" y="102" text-anchor="middle" class="m">traduction</text><text x="600" y="120" text-anchor="middle" class="m">séquence vers séquence</text>
+</svg>
+
+<h3>4.6 Exercices</h3>
+<div class="ex"><div class="h">Ex 4.1 <span class="lvl l1">calcul</span> Attention à la main</div>
+<p>$d_k=2$, une requête $q=(1,0)$, clés $k_1=(1,0)$, $k_2=(0,1)$, $k_3=(-1,0)$, valeurs $v_1=(1,0)$, $v_2=(0,1)$, $v_3=(1,1)$. Calcule les poids et la sortie. (Vérifie avec le calculateur.)</p>
+<details class="sol"><summary>Correction</summary><p>Scores $q\cdot k_j/\sqrt2=(0{,}707;\,0;\,-0{,}707)$. Exponentielles $(2{,}028;\,1;\,0{,}493)$, somme $3{,}521$. Poids $\alpha=(0{,}576;\,0{,}284;\,0{,}140)$. Sortie $=0{,}576(1,0)+0{,}284(0,1)+0{,}140(1,1)=(0{,}716;\,0{,}424)$.</p></details></div>
+<div class="ex"><div class="h">Ex 4.2 <span class="lvl l2">compréhension</span> Paramètres d'une couche d'attention</div>
+<p>Multi-head attention avec $d=64$ et 4 têtes. Combien de paramètres ? Le nombre de têtes change-t-il ce nombre ?</p>
+<details class="sol"><summary>Correction</summary><p>Quatre matrices $d\times d$ ($W_Q,W_K,W_V,W_O$) plus leurs biais : $4d^2+4d=16\,384+256=16\,640$ (vérifié avec <code>nn.MultiheadAttention(64, 4)</code>). Le nombre de têtes ne change rien : chaque tête utilise un bloc $d/h$ de la même matrice. Remarque : ce nombre ne dépend pas de la longueur $L$. Le coût en calcul, lui, en dépend ($L^2$).</p></details></div>
+<div class="ex"><div class="h">Ex 4.3 <span class="lvl l2">raisonnement</span> Le masque de padding</div>
+<p>Phrase « good film » paddée à 5 tokens : [CLS] good film [SEP] [PAD]. Montre que sans masque, le vecteur de [CLS] change si on padde à 10 au lieu de 5, et qu'avec masque il ne change pas.</p>
+<details class="sol"><summary>Correction</summary><p>Sans masque, le softmax de la ligne [CLS] répartit le poids sur toutes les positions, y compris les [PAD]. Ajouter 5 [PAD] ajoute 5 termes $e^{s_j}$ au dénominateur : tous les poids des vrais tokens baissent, et la sortie mélange davantage la valeur de [PAD]. Avec masque, les scores des [PAD] valent $-\infty$, donc $e^{-\infty}=0$ : le dénominateur et la sortie sont identiques, quel que soit le nombre de [PAD]. C'est mot pour mot la section 2 du document BERT.</p></details></div>
+<div class="ex"><div class="h">Ex 4.4 <span class="lvl l3">phase 1 type</span> Prédiction raisonnée</div>
+<p>On entraîne from scratch, sur les 7 352 fenêtres HAR, un GRU et un petit encodeur Transformer avec un nombre de paramètres comparable. Puis le même Transformer <b>sans</b> encodage de position. Prédis le classement et justifie.</p>
+<details class="sol"><summary>Correction</summary><p>Hypothèse raisonnable : GRU ≈ Transformer avec position, et Transformer sans position nettement en dessous sur les classes où l'ordre temporel compte (monter ou descendre l'escalier, marcher). Les classes posturales (assis, debout, couché) restent faciles, car la gravité dans l'accélération totale suffit, sans ordre. Justification : sans position, le modèle ne voit qu'un ensemble de mesures (comme un histogramme). Avec peu de données, le biais inductif du GRU aide. Le Transformer peut compenser grâce à son champ récepteur global. Le plan : 3 seeds, matrice de confusion pour voir <b>quelles</b> classes souffrent. C'est l'examen blanc B.</p></details></div>
+
+<div class="quiz card" data-quiz="att"></div>
+<ul class="can" data-step="4">
+<li><input type="checkbox" data-k="4a"><span>Je sais écrire la formule de l'attention et expliquer Q, K, V, $\sqrt{d_k}$ et les masques.</span></li>
+<li><input type="checkbox" data-k="4b"><span>Je sais faire un calcul d'attention à la main.</span></li>
+<li><input type="checkbox" data-k="4c"><span>Je connais le tableau RNN contre Transformer par cœur.</span></li>
+<li><input type="checkbox" data-k="4d"><span>Je sais expliquer pourquoi l'encodage de position est nécessaire.</span></li>
+</ul>
+</section>
+
+<!-- ===================================================== 5 -->
+<section class="step" id="s5" data-s="5">
+<h2><span>5. Le document BERT</span><span class="tag">questions garanties</span></h2>
+<p class="lead">Non consultable pendant le TP : il faut le connaître. Tout ce qui est demandé est dans la page. Les cartes ci-dessous la couvrent phrase par phrase. Clique pour retourner, double-clique pour marquer « je sais ».</p>
+<div class="ctx"><div><b>À quoi ça sert</b><p>Disposer d'un encodeur déjà entraîné sur beaucoup de texte, qui donne un vecteur contextuel par token, et l'adapter à sa tâche avec peu d'exemples labellisés.</p></div><div><b>D'où ça vient</b><p>Le document de préparation fourni par l'enseignant, inspiré de Devlin et al. (2018). Il ne sera pas disponible pendant l'épreuve.</p></div><div class="exam"><b>À l'examen</b><p>Questions quasi garanties : rôle de [CLS] et [SEP], masque d'attention, MLM et NSP, fine-tuning complet contre encodeur gelé, nombre de paramètres entraînés.</p></div></div>
+
+<svg class="diagram" viewBox="0 0 720 210" role="img" aria-label="BERT pour la classification : tokens, encodeur, vecteur CLS, couche linéaire">
+<text x="10" y="196" class="m">entrée</text>
+<g font-size="11">
+<rect x="70" y="175" width="60" height="26" rx="4" class="f-ok"/><text x="100" y="192" text-anchor="middle">[CLS]</text>
+<rect x="140" y="175" width="60" height="26" rx="4"/><text x="170" y="192" text-anchor="middle">a</text>
+<rect x="210" y="175" width="60" height="26" rx="4"/><text x="240" y="192" text-anchor="middle">great</text>
+<rect x="280" y="175" width="60" height="26" rx="4"/><text x="310" y="192" text-anchor="middle">film</text>
+<rect x="350" y="175" width="60" height="26" rx="4"/><text x="380" y="192" text-anchor="middle">[SEP]</text>
+<rect x="420" y="175" width="60" height="26" rx="4" class="f-ko"/><text x="450" y="192" text-anchor="middle">[PAD]</text>
+</g>
+<text x="500" y="186" class="m">masque : 1 1 1 1 1 0</text>
+<text x="500" y="200" class="m">embedding = token + position</text>
+<rect x="70" y="95" width="410" height="60" rx="8" class="f-acc"/><text x="275" y="120" text-anchor="middle">Encodeur Transformer (N couches : self-attention + feed-forward)</text><text x="275" y="140" text-anchor="middle" class="m">bidirectionnel ; poids d'attention sur [PAD] = 0</text>
+<path d="M100 175v-20M170 175v-20M240 175v-20M310 175v-20M380 175v-20M450 175v-20"/>
+<path d="M100 95v-20M170 95v-20M240 95v-20M310 95v-20M380 95v-20M450 95v-20"/>
+<g font-size="11"><text x="100" y="68" text-anchor="middle">h_CLS</text><text x="170" y="68" text-anchor="middle" class="m">h₁</text><text x="240" y="68" text-anchor="middle" class="m">h₂</text><text x="310" y="68" text-anchor="middle" class="m">h₃</text><text x="380" y="68" text-anchor="middle" class="m">h₄</text><text x="450" y="68" text-anchor="middle" class="m">h₅</text></g>
+<path d="M100 58v-18"/>
+<rect x="55" y="10" width="90" height="30" rx="6" class="f-ok"/><text x="100" y="30" text-anchor="middle">Linear</text>
+<path d="M145 25h40"/><text x="190" y="30">scores de classe</text>
+<text x="500" y="110" class="m">gelé : p.requires_grad = False</text>
+<text x="500" y="126" class="m">ou entraîné (fine-tuning complet)</text>
+<text x="300" y="30" class="m">toujours entraînée (nouvelle couche)</text>
+</svg>
+
+<div class="fc-wrap" id="fc"></div>
+<p><button class="btn" id="fc-reset">Retourner toutes les cartes</button> <span id="fc-score" class="score"></span></p>
+
+<h3>5.1 Exercices sur le document</h3>
+<div class="ex"><div class="h">Ex 5.1 <span class="lvl l2">phase 1 type</span> Dessine la courbe</div>
+<p>Trace l'accuracy test attendue en fonction du nombre d'exemples labellisés (100 à 10 000, échelle log) pour : BERT pré-entraîné complètement fine-tuné, BERT pré-entraîné gelé, même architecture from scratch. Justifie avec le document.</p>
+<details class="sol"><summary>Correction</summary>
+<svg class="diagram" viewBox="0 0 420 230" role="img" aria-label="Courbes attendues en fonction du nombre de labels">
+<path d="M50 190h340M50 190v-170"/>
+<text x="220" y="222" text-anchor="middle" class="m">nombre d'exemples labellisés (log)</text>
+<text x="18" y="105" class="m" transform="rotate(-90 18 105)">accuracy</text>
+<path d="M60 70 C150 50 260 38 380 32" style="stroke:var(--ok);stroke-width:2.4"/>
+<path d="M60 92 C150 82 260 76 380 74" style="stroke:var(--acc);stroke-width:2.4"/>
+<path d="M60 172 C150 150 260 95 380 52" style="stroke:var(--ko);stroke-width:2.4"/>
+<text x="300" y="28" style="fill:var(--ok)">fine-tuning complet</text>
+<text x="300" y="90" style="fill:var(--acc)">encodeur gelé</text>
+<text x="190" y="150" style="fill:var(--ko)">from scratch</text>
+<path d="M60 175h330" style="stroke:var(--mute);stroke-dasharray:3 3"/><text x="392" y="178" class="m">hasard</text>
+</svg>
+<ul><li>Pré-entraînés au-dessus de from scratch, avec un <b>écart maximal quand les labels sont rares</b>, qui se réduit quand ils deviennent abondants (section 5).</li>
+<li>Gelé en dessous du fine-tuning complet : « un encodeur gelé ne peut pas adapter ses vecteurs à la tâche » (section 4). L'écart peut être faible, voire inversé, avec très peu de labels : le fine-tuning complet de millions de paramètres sur 100 exemples peut surapprendre. C'est une nuance à proposer comme hypothèse, pas à affirmer.</li>
+<li>From scratch : proche du hasard avec très peu de données, puis remonte.</li>
+<li>Nuance mesurée (examen blanc A) : tout en bas (100 exemples, 5 epochs), même le pré-entraîné apprend peu, donc l'écart est plus petit qu'à 500. Le « maximum » de l'avantage se situe dans la zone des labels rares, mais pas au tout premier point.</li></ul></details></div>
+<div class="ex"><div class="h">Ex 5.2 <span class="lvl l2">compréhension</span> Pourquoi pas de labels ?</div>
+<p>Explique pourquoi le masked language modelling est « self-supervised ». Donne la cible d'un exemple.</p>
+<details class="sol"><summary>Correction</summary><p>Les cibles sont fabriquées à partir du texte lui-même. On prend « the cat sat on the mat », on cache 15 % des tokens : « the cat [MASK] on the mat ». La cible est « sat », connue sans annotateur humain. On peut donc s'entraîner sur des milliards de mots (livres et Wikipedia anglais). Pour le next-sentence prediction, on prend deux segments consécutifs (label « suit ») ou un segment tiré ailleurs (label « ne suit pas »). La prédiction se fait à partir du vecteur de [CLS].</p></details></div>
+<div class="ex"><div class="h">Ex 5.3 <span class="lvl l3">code</span> Geler en PyTorch et vérifier</div>
+<p>Écris le gel de l'encodeur, puis une ligne qui compte les paramètres entraînables. Avec un encodeur de dimension 768 et 2 classes, combien de paramètres entraînables reste-t-il ?</p>
+<details class="sol"><summary>Correction</summary><pre><code>for p in model.encoder.parameters():
+    p.requires_grad = False
+n_train = sum(p.numel() for p in model.parameters() if p.requires_grad)
+optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=1e-3)</code></pre>
+<p>Seule la couche linéaire reste : $768\times2+2=1\,538$ paramètres (contre environ 110 millions pour bert-base). Le vérifier et l'imprimer est un excellent réflexe : c'est une preuve, dans le notebook, que le gel fonctionne. On peut aussi calculer les vecteurs [CLS] une seule fois, sous <code>torch.no_grad()</code>, puis entraîner la couche linéaire sur ces vecteurs : c'est beaucoup plus rapide.</p></details></div>
+<div class="quiz card" data-quiz="bert"></div>
+<ul class="can" data-step="5">
+<li><input type="checkbox" data-k="5a"><span>Toutes les cartes BERT sont marquées « je sais ».</span></li>
+<li><input type="checkbox" data-k="5b"><span>Je sais redessiner le schéma BERT pour la classification de mémoire.</span></li>
+<li><input type="checkbox" data-k="5c"><span>Je sais justifier la courbe « labels rares contre abondants ».</span></li>
+</ul>
+</section>
+
+<!-- ===================================================== 6 -->
+<section class="step" id="s6" data-s="6">
+<h2><span>6. Transfer learning : pré-entraînement et fine-tuning (TP2-3)</span></h2>
+<p class="lead">TP2 : CNN chats contre chiens, dropout, augmentation de données, modèle pré-entraîné par l'enseignant sur 10 classes, TensorBoard.</p>
+<div class="ctx"><div><b>À quoi ça sert</b><p>Réutiliser ce qu'un modèle a appris sur une grande tâche pour en résoudre une petite, avec moins de données et moins de calcul.</p></div><div><b>D'où ça vient</b><p>TP2-3 (CNN pré-entraîné réutilisé pour chats contre chiens), puis GloVe au TP4-2 (embeddings pré-entraînés), puis BERT.</p></div><div class="exam"><b>À l'examen</b><p>Thème annoncé. On attend de savoir quoi geler, quel taux d'apprentissage choisir, et pourquoi le pré-entraînement aide surtout quand les labels sont rares.</p></div></div>
+
+<h3>6.1 Les gestes et leur justification</h3>
+<div class="tw"><table>
+<tr><th>Geste</th><th>Pourquoi</th></tr>
+<tr><td>Retirer la ou les dernières couches du modèle pré-entraîné</td><td>Elles sont spécifiques à l'ancienne tâche (10 sorties). Les couches profondes de convolution donnent des features générales (bords, textures, formes) réutilisables. On ajoute une nouvelle tête adaptée (2 sorties)</td></tr>
+<tr><td>Geler le corps (feature extraction)</td><td>Peu de données : moins de paramètres à apprendre, moins de surapprentissage, plus rapide. Mais performance plafonnée</td></tr>
+<tr><td>Fine-tuning complet</td><td>Adapte les features à la tâche. Learning rate <b>plus petit</b> que from scratch, pour ne pas détruire ce qui a été appris (oubli catastrophique)</td></tr>
+<tr><td>Dégel progressif, lr différencié</td><td>D'abord la tête seule, puis les dernières couches, avec des lr plus faibles près de l'entrée</td></tr>
+<tr><td>Augmentation de données (rotation, miroir, recadrage)</td><td>Rendre le modèle invariant à des transformations qui ne changent pas la classe. <b>Uniquement sur le train</b>, jamais en validation ni en test (CM CNN)</td></tr>
+<tr><td>Dropout</td><td>Mettre à zéro des activations au hasard pendant l'entraînement : régularisation, réduit le surapprentissage. Coupé en évaluation</td></tr>
+</table></div>
+<p><b>Même logique pour le texte</b> : GloVe dans TP4-2 (embeddings figés), BERT (encodeur gelé ou fine-tuné). Le pré-entraînement apporte une connaissance générale ; le fine-tuning l'adapte avec peu de labels.</p>
+
+<h3>6.2 Exercice : corrige ce compte-rendu de TP2</h3>
+<p class="lead">Extraits d'un compte-rendu réel de TP2. Pour chaque phrase, dis ce qui est juste, faux ou non démontré. C'est exactement l'œil critique attendu en phase 5.</p>
+<div class="ex"><div class="h">(a) « Le dropout sert à réduire le temps de calcul du réseau en annulant des connexions. »</div>
+<details class="sol"><summary>Correction</summary><p><b>Faux.</b> Le but du dropout est la régularisation (QCM 7 du midterm 1 : réponse c). Il ne réduit pas le calcul : les matrices gardent leur taille, on multiplie par un masque. La suite de la phrase (« réduit le surapprentissage ») est juste.</p></details></div>
+<div class="ex"><div class="h">(b) « La loss de validation décroît jusqu'à l'epoch 10, puis fluctue : surapprentissage, peut-être dû à un mauvais réglage du learning rate. »</div>
+<details class="sol"><summary>Correction</summary><p><b>Diagnostic mélangé.</b> Si la loss de validation remonte alors que celle d'entraînement baisse, c'est du surapprentissage, lié à la capacité du modèle et à la quantité de données, pas au learning rate. Des fluctuations fortes des deux courbes indiqueraient plutôt un lr trop grand. Il faut regarder <b>les deux</b> courbes et dire laquelle fait quoi. Et proposer un remède (early stopping à l'epoch 10).</p></details></div>
+<div class="ex"><div class="h">(c) « L'augmentation n'apporte pas de nette amélioration car il y avait déjà suffisamment de données. »</div>
+<details class="sol"><summary>Correction</summary><p><b>Non démontré.</b> Sur un seul run, une absence de différence peut être du bruit. Et la cause avancée (« assez de données ») n'est pas testée. Il faudrait plusieurs seeds, et par exemple faire varier la taille du train pour tester cette explication. Bonne formulation : « Sur un run, pas de différence visible ; on ne peut pas conclure. »</p></details></div>
+<div class="ex"><div class="h">(d) « On supprime la dernière couche car elle est adaptée à un problème à 10 sorties ; on recode une couche à 2 sorties. »</div>
+<details class="sol"><summary>Correction</summary><p><b>Juste.</b> On peut compléter : les couches précédentes donnent des représentations générales réutilisables ; la nouvelle couche est initialisée au hasard et doit être entraînée.</p></details></div>
+<div class="ex"><div class="h">(e) « Sans dropout, la précision de validation passe sous celle d'apprentissage beaucoup plus tôt : surapprentissage très important. »</div>
+<details class="sol"><summary>Correction</summary><p><b>Plutôt juste, mais à préciser.</b> Une validation un peu sous le train est normale. Ce qui indique le surapprentissage, c'est un <b>écart qui grandit</b> et une validation qui stagne ou se dégrade. Il faut citer les valeurs et l'epoch, et répéter sur plusieurs seeds avant d'attribuer l'effet au dropout.</p></details></div>
+<div class="quiz card" data-quiz="tl"></div>
+<ul class="can" data-step="6">
+<li><input type="checkbox" data-k="6a"><span>Je sais justifier : retirer la tête, geler ou non, lr plus petit, augmentation sur le train seulement.</span></li>
+<li><input type="checkbox" data-k="6b"><span>Je sais critiquer une conclusion non soutenue par l'expérience.</span></li>
+</ul>
+</section>
+
+<!-- ===================================================== 7 -->
+<section class="step" id="s7" data-s="7">
+<h2><span>7. Stratégie des trois phases</span><span class="tag">méthode d'examen</span></h2>
+<div class="ctx"><div><b>À quoi ça sert</b><p>Convertir ce que tu sais en points, dans un temps très court et en partie sans machine.</p></div><div><b>D'où ça vient</b><p>Le format décrit dans le mail de l'enseignant : 1 h sur papier, 50 min sur Colab avec IA, 35 min sur papier.</p></div><div class="exam"><b>À l'examen</b><p>La phase 1 compte le plus. Un plan précis rend la phase 4 presque mécanique, et des chiffres recopiés à temps rendent la phase 5 facile.</p></div></div>
+
+<h3>7.1 Phase 1 (1 h, papier) : le gabarit du plan</h3>
+<div class="card">
+<ol>
+<li><b>Problème</b> : entrée (forme exacte, type), sortie (classes, équilibre), type de tâche, ce qui est difficile.</li>
+<li><b>Question de recherche</b> en une phrase : « Est-ce que X améliore Y quand Z ? »</li>
+<li><b>Hypothèses</b> chiffrables et justifiées par le cours : « je m'attends à ... parce que ... ».</li>
+<li><b>Modèles comparés</b> : architecture précise (couches, tailles), ce qui est entraîné ou gelé, nombre de paramètres entraînables, et le <b>seul facteur</b> qui change entre deux modèles.</li>
+<li><b>Données</b> : split train/val/test (comment, et pourquoi, par exemple par sujet), prétraitement (statistiques du train seulement), tailles de sous-échantillons.</li>
+<li><b>Protocole</b> : optimiseur, lr, batch, epochs, critère de sélection (meilleure epoch en validation), seeds (3), ce qui est identique pour tous.</li>
+<li><b>Mesures</b> : métrique principale (accuracy si classes équilibrées, sinon F1 ou accuracy équilibrée), loss train/val par epoch, temps, paramètres. Le test : une fois, à la fin.</li>
+<li><b>Tableau et figure prévus</b> : dessine-les vides (lignes = modèles, colonnes = conditions, cases = moyenne ± écart-type).</li>
+<li><b>Règle de décision</b> : quand je dirai « A est meilleur », et quand je dirai « non concluant ».</li>
+<li><b>Budget et priorités</b> : temps estimé par run × nombre de runs ≤ 30 min de calcul. Ordre : test rapide, puis expérience principale, puis secondaire.</li>
+<li><b>Risques et parades</b> : surapprentissage (early stopping), temps (moins de seeds), mémoire GPU (batch plus petit, séquences plus courtes), déséquilibre de classes.</li>
+</ol>
+<div class="warn">Pendant le ramassage, tu gardes tes notes. Dans la dernière dizaine de minutes de la phase 1, <b>recopie la liste des runs, les hyperparamètres et l'ordre d'exécution</b> sur ta feuille personnelle : c'est ton cahier des charges pour la phase 4.</div>
+</div>
+
+<h3>7.2 Phase 4 (50 min, Colab et IA) : la chronologie</h3>
+<div class="card tl">
+<b>0 à 5</b><span>GPU activé, imports, chargement des données, une impression de forme (<code>X.shape</code>, distribution des classes).</span>
+<b>5 à 15</b><span>Modèle 1 + Trainer (repartir du TP4), <b>un run court</b> de 1 epoch pour vérifier que tout tourne. Imprimer le nombre de paramètres entraînables.</span>
+<b>15 à 20</b><span>Fonction <code>run(nom, seed, ...)</code> qui renvoie l'historique et le meilleur score validation. Autres modèles.</span>
+<b>20 à 40</b><span>Lancer la grille principale (seeds) ; pendant qu'elle tourne, préparer le tableau et la figure.</span>
+<b>40 à 47</b><span>Tableau moyenne ± écart-type, figure des courbes, test une seule fois.</span>
+<b>47 à 50</b><span><b>Recopier les chiffres</b> sur papier (tableau final, epochs de surapprentissage, temps). La phase 5 se fait sans machine.</span>
+</div>
+<div class="note"><b>Bien utiliser l'IA.</b> Donne-lui ton plan précis et le style du cours. Par exemple : « Écris une classe PyTorch BertClassifier avec forward(input_ids, attention_mask) qui renvoie les logits via une couche linéaire sur last_hidden_state[:, 0], et les méthodes configure_optimizers, training_step, validation_step comme dans ce code : [coller le LSTMNetwork du TP4] ». Relis chaque ligne : tu devras l'expliquer en phase 5. Refuse le code que tu ne comprends pas (Lightning, Trainer de HuggingFace, etc.).</div>
+
+<h3>7.3 Phase 5 (35 min, papier) : le gabarit du rapport</h3>
+<div class="card">
+<ol>
+<li><b>Ce que j'ai fait</b> (3 lignes) : modèles, données, protocole effectivement suivi, et les <b>écarts au plan</b> (avec la raison).</li>
+<li><b>Résultats</b> : le tableau (moyenne ± écart-type, nombre de seeds), une description des courbes (epoch de surapprentissage).</li>
+<li><b>Interprétation</b> : hypothèse confirmée ou non, avec le lien au cours (pré-entraînement, biais inductif, attention, etc.).</li>
+<li><b>Limites</b> : peu de seeds, un seul jeu d'hyperparamètres, un seul jeu de données, pas d'intervalles de confiance stricts.</li>
+<li><b>Ce que je ferais avec plus de temps</b> (2 propositions concrètes).</li>
+<li><b>Explication du code</b> : recopie le <code>forward</code> et la boucle d'entraînement, et annote chaque ligne : forme des tenseurs, rôle, pourquoi.</li>
+</ol>
+<div class="key">Formules qui rapportent : « Le résultat est-il soutenu ? Oui, l'écart (x points) dépasse nettement la variabilité entre seeds (± y). » « Ce résultat ne permet pas de conclure, car ... » « La validation a servi à ..., le test n'a été utilisé qu'une fois. »</div>
+</div>
+<ul class="can" data-step="7">
+<li><input type="checkbox" data-k="7a"><span>Je connais le gabarit du plan en 11 points.</span></li>
+<li><input type="checkbox" data-k="7b"><span>J'ai préparé mes prompts pour l'IA et la chronologie des 50 minutes.</span></li>
+<li><input type="checkbox" data-k="7c"><span>Je connais le gabarit du rapport.</span></li>
+</ul>
+</section>
+
+<!-- ===================================================== 8 -->
+<section class="step" id="s8" data-s="8">
+<h2><span>8. Examen blanc A : pré-entraînement et peu de labels</span><span class="tag">3 h</span></h2>
+<div class="card">
+<p class="eyebrow">Contexte du sujet</p>
+<div class="facts">
+<div><b>Données</b><small>SST-2 (Stanford Sentiment Treebank) : phrases extraites de critiques de films, positives ou négatives. Environ 67 000 phrases d'entraînement, 872 de validation officielle, classes à peu près équilibrées.</small></div>
+<div><b>Modèle fourni</b><small>Un petit BERT (4 couches, dimension 256, 4 têtes, environ 11 millions de paramètres), assez léger pour tourner en quelques secondes par run sur un GPU T4.</small></div>
+<div><b>Pourquoi ce sujet</b><small>Il réunit trois thèmes annoncés : le document BERT, le transfer learning et la méthodologie. La vraie question est quantitative : combien le pré-entraînement rapporte, selon le nombre de labels.</small></div>
+<div><b>Ce qui est attendu</b><small>Phase 1 : réponses et plan, notés sur 20 dans le corrigé. Phase 4 : compléter les TODO du notebook de départ. Phase 5 : un rapport court et l'explication du forward.</small></div>
+</div>
+<div class="btnrow"><a class="btn pri" href="https://colab.research.google.com/github/djamal2905/deep-learning-revision/blob/main/notebooks/examen-blanc-A-depart.ipynb" target="_blank" rel="noopener">Ouvrir le sujet dans Colab</a><a class="btn" href="https://colab.research.google.com/github/djamal2905/deep-learning-revision/blob/main/notebooks/examen-blanc-A-corrige.ipynb" target="_blank" rel="noopener">Ouvrir le corrigé dans Colab</a></div>
+<p class="rev-meta">Dans Colab : Exécution, Modifier le type d'exécution, GPU T4. Ouvre le corrigé seulement après ta tentative.</p>
+</div>
+<div class="card">
+<p><b>Sujet.</b> On veut classer des critiques de films en positif ou négatif (SST-2 : phrases courtes, 2 classes équilibrées). On dispose d'un petit BERT pré-entraîné (4 couches, dimension 256, environ 11 millions de paramètres) et on peut aussi entraîner des modèles from scratch. On veut savoir <b>combien le pré-entraînement aide selon le nombre d'exemples labellisés</b>, et ce que coûte le gel de l'encodeur.</p>
+<p><b>Phase 1 (1 h, sans document)</b>. Réponds sur papier :</p>
+<ol>
+<li>Décris l'entrée (après tokenisation) et la sortie du modèle. Pourquoi n'a-t-on pas besoin de décodeur ?</li>
+<li>Que représente le vecteur à la position de [CLS] ? Pourquoi peut-il résumer la phrase alors qu'il est en première position ?</li>
+<li>À quoi sert le masque d'attention ? Que se passerait-il sans lui ?</li>
+<li>Décris les deux variantes de fine-tuning. Combien de paramètres sont entraînés dans chacune (ordre de grandeur) ?</li>
+<li>Pourquoi un encodeur pré-entraîné aurait-il besoin de moins de labels ? Qu'est-ce que le pré-entraînement a appris, et sans quels labels ?</li>
+<li>Propose un modèle de référence récurrent. En quoi diffère-t-il d'un encodeur Transformer ?</li>
+<li>Écris le plan d'expériences complet (gabarit 7.1), avec le budget de calcul.</li>
+<li>Dessine les résultats que tu attends.</li>
+</ol>
+<p><span class="timer" id="tA">60:00</span> <button class="btn pri" data-timer="tA" data-min="60">Démarrer 1 h</button> <button class="btn" data-timer="tA" data-min="35">35 min (phase 5)</button> <button class="btn" data-stop="tA">Stop</button></p>
+<textarea class="draft" data-draft="A" placeholder="Brouillon (enregistré dans ce navigateur). Le vrai entraînement se fait sur papier."></textarea>
+</div>
+<details class="sol"><summary>Corrigé et barème de la phase 1</summary>
+<ol>
+<li><b>Entrée</b> : suite d'indices de tokens WordPiece, [CLS] au début, [SEP] à la fin, paddée à une longueur fixe dans le batch (forme (B, L)), plus le masque d'attention (B, L) avec 1 pour les vrais tokens et 0 pour le padding. Embedding = token + position. <b>Sortie</b> : 2 scores (logits), un par classe. Pas de décodeur : on ne génère pas une séquence, on produit une seule étiquette (document, introduction). <i>(2 pts)</i></li>
+<li>C'est un vecteur contextuel, calculé par attention sur <b>tous</b> les tokens de l'entrée. Dans un encodeur bidirectionnel, la position ne limite pas ce qu'on voit : [CLS] « regarde » toute la phrase à chaque couche. De plus, le pré-entraînement l'a utilisé pour le next-sentence prediction, donc il a appris à résumer. <i>(2 pts)</i></li>
+<li>Les poids d'attention sur les positions de padding sont mis à 0 : les vecteurs des vrais tokens ne dépendent pas de la quantité de padding. Sans masque, la prédiction pour une phrase dépendrait de la plus longue phrase du batch, et donc de la composition du batch. Résultats incohérents entre entraînement et test. <i>(2 pts)</i></li>
+<li>(a) Fine-tuning complet : tout est entraîné, encodeur et couche linéaire, environ 11 millions de paramètres. (b) Encodeur gelé (<code>p.requires_grad = False</code>) : seule la couche linéaire est entraînée, $256\times2+2=514$ paramètres. Le gel est moins cher, mais l'encodeur ne peut pas adapter ses vecteurs, donc accuracy généralement plus basse. <i>(2 pts)</i></li>
+<li>Pré-entraînement sur beaucoup de texte non labellisé, avec deux tâches auto-supervisées : prédire les 15 % de tokens masqués (MLM), et prédire si B suit A (NSP, via [CLS]). Le texte fournit les réponses. L'encodeur connaît déjà le sens des mots et leur combinaison. Il ne reste qu'à apprendre la tâche, d'où le besoin de moins de labels. Avantage maximal quand les labels sont rares, qui diminue quand ils abondent. <i>(2 pts)</i></li>
+<li>Embedding appris + GRU bidirectionnel, Linear sur les états finaux (comme TP4-2, mais une classe par phrase). Différences : calcul séquentiel contre parallèle ; dépendances longues via l'état caché contre connexion directe ; biais d'ordre implicite contre encodage de position ; pas de pré-entraînement. <i>(2 pts)</i></li>
+<li><b>Plan</b> (6 pts) :
+<ul>
+<li>Modèles : <code>finetune</code>, <code>frozen</code>, <code>scratch</code> (<b>même architecture</b>, poids aléatoires : isole l'effet du pré-entraînement), <code>gru</code> (référence).</li>
+<li>Même tokenisation pour tous (le tokenizer de BERT, y compris pour le GRU) et même longueur maximale (64).</li>
+<li>Facteur : n_train ∈ {100, 500, 2000}, tirés au hasard dans le train officiel. Validation : 1 000 phrases du train officiel, disjointes. Test : le split validation officiel (872 phrases), utilisé une seule fois.</li>
+<li>AdamW ; lr 5e-5 pour le fine-tuning (petit, pour ne pas détruire le pré-entraînement), 1e-3 pour la tête seule, 1e-4 pour scratch ; batch 16 ; 5 epochs ; meilleure epoch en validation pour tous.</li>
+<li>3 seeds (la seed change l'initialisation, l'ordre des batchs et le sous-échantillon).</li>
+<li>Mesures : accuracy (classes équilibrées), courbes, temps, paramètres entraînables.</li>
+<li>Budget : 4 modèles × 3 tailles × 3 seeds = 36 runs ; avec le petit BERT sur T4, environ 10 à 20 s par run, donc 10 à 15 min. Priorités : n=500 d'abord (12 runs), puis 100, puis 2000.</li>
+<li>Règle de décision : différence soutenue si les intervalles moyenne ± écart-type ne se recouvrent pas et que le sens est le même pour les 3 seeds.</li>
+<li>Risques : scratch et GRU proches du hasard avec n=100 (c'est un résultat, pas un bug, mais vérifier que la loss train baisse) ; surapprentissage du fine-tuning sur n=100 (early stopping).</li>
+</ul></li>
+<li><b>Figure</b> : accuracy validation en fonction de n_train (échelle log), 4 courbes avec barres d'erreur. Attendu : finetune ≥ frozen &gt; scratch ≈ gru ; écart qui se réduit quand n devient grand. Bonus de lucidité : prévoir qu'avec très peu d'exemples (100) et peu d'epochs, tous les modèles peuvent rester proches du hasard, ce qui réduit l'écart en bas de la courbe. C'est ce qu'on observe en pratique (voir le rapport modèle). <i>(2 pts)</i></li>
+</ol>
+</details>
+<div class="card">
+<p><b>Phase 4</b> : ouvre <a href="https://colab.research.google.com/github/djamal2905/deep-learning-revision/blob/main/notebooks/examen-blanc-A-depart.ipynb" target="_blank" rel="noopener"><code>examen-blanc-A-depart.ipynb</code></a> dans Colab, GPU T4, et implémente le plan en 50 minutes. Le corrigé exécutable est <code>examen-blanc-A-corrige.ipynb</code>. Ne l'ouvre qu'après ta tentative.</p>
+</div>
+<details class="sol"><summary>Rapport modèle de la phase 5 (à adapter à tes chiffres)</summary>
+<p><b>Ce que j'ai fait.</b> J'ai comparé quatre modèles sur SST-2 avec la même tokenisation WordPiece (longueur 64) : un petit BERT pré-entraîné entièrement fine-tuné, le même avec l'encodeur gelé, la même architecture initialisée au hasard, et un GRU bidirectionnel. J'ai fait varier le nombre de phrases d'entraînement (100, 500, 2000), avec 3 seeds par configuration. Le modèle retenu pour chaque run est celui de la meilleure epoch en validation (1 000 phrases tirées du train). Le test (872 phrases) n'a été évalué qu'une fois, à la fin.</p>
+<p><b>Résultats.</b> Chiffres réels d'un run de vérification (CPU, 2 seeds, 5 epochs, accuracy validation, moyenne ± écart-type) :</p>
+<div class="tw"><table><tr><th>modèle</th><th>n = 100</th><th>n = 500</th></tr>
+<tr><td>finetune</td><td>0,634 ± 0,040</td><td>0,756 ± 0,022</td></tr>
+<tr><td>frozen</td><td>0,603 ± 0,053</td><td>0,714 ± 0,004</td></tr>
+<tr><td>scratch</td><td>0,560 ± 0,001</td><td>0,612 ± 0,035</td></tr>
+<tr><td>gru</td><td>0,566 ± 0,003</td><td>0,599 ± 0,032</td></tr></table></div>
+<p>À n = 500, les deux variantes pré-entraînées dépassent nettement les modèles from scratch : environ +10 à +15 points, bien au-delà des écarts-types. Le fine-tuning complet dépasse le gel de 4 points. À n = 100, l'ordre est le même, mais l'écart entre finetune et scratch (7 points) est du même ordre que la variabilité du fine-tuning (± 4) : avec 2 seeds, on ne peut que le suggérer. Scratch et GRU sont indiscernables et restent proches du hasard (50 %).</p>
+<p><b>Interprétation.</b> Le pré-entraînement aide, comme le prédit le document : l'encodeur a appris la langue sans labels (MLM et NSP). En revanche, l'écart absolu est <b>plus grand à 500 qu'à 100</b>. Ce n'est pas une contradiction avec « l'avantage est maximal quand les labels sont rares » : avec 100 exemples et 5 epochs, même le modèle pré-entraîné apprend à peine la tâche. Le document décrit une tendance sur une plage plus large (de quelques centaines à des dizaines de milliers d'exemples). Il faudrait n = 2 000 et plus pour voir l'écart se refermer. Le gel coûte quelques points, car l'encodeur ne peut pas adapter ses vecteurs à la tâche, mais il entraîne 514 paramètres au lieu de 11 millions et va deux fois plus vite. Sans pré-entraînement, le Transformer ne fait pas mieux que le GRU : il n'a pas de biais inductif qui l'aide avec peu de données.</p>
+<div class="key">Leçon pour le jour J : quand un résultat ne correspond pas à l'hypothèse, on ne le cache pas. On l'écrit, on propose une explication testable (ici : nombre d'epochs trop faible pour n = 100, plage de n trop étroite) et on dit quelle expérience la vérifierait. Cela vaut plus de points qu'un résultat « conforme » mal analysé.</div>
+<p><b>Limites.</b> 3 seeds seulement ; un seul jeu d'hyperparamètres par modèle (le lr de scratch n'est peut-être pas optimal) ; 5 epochs, peut-être insuffisant pour scratch à n=2000 ; un seul jeu de données.</p>
+<p><b>Code expliqué.</b> <code>out = self.encoder(input_ids=input_ids, attention_mask=attention_mask)</code> : passe les indices (B, 64) et le masque dans l'encodeur. <code>last_hidden_state</code> a la forme (B, 64, 256), un vecteur par token. <code>[:, 0]</code> prend la position de [CLS], d'où la forme (B, 256). <code>self.linear</code> donne (B, 2) logits, puis CrossEntropyLoss. Gel : <code>for p in self.encoder.parameters(): p.requires_grad = False</code>, et l'optimiseur ne reçoit que les paramètres entraînables.</p>
+</details>
+<ul class="can" data-step="8">
+<li><input type="checkbox" data-k="8a"><span>Phase 1 faite en 1 h sur papier, puis corrigée avec le barème.</span></li>
+<li><input type="checkbox" data-k="8b"><span>Phase 4 faite en 50 min sur Colab.</span></li>
+<li><input type="checkbox" data-k="8c"><span>Phase 5 faite en 35 min, comparée au rapport modèle.</span></li>
+</ul>
+</section>
+
+<!-- ===================================================== 9 -->
+<section class="step" id="s9" data-s="9">
+<h2><span>9. Examen blanc B : GRU ou attention pour HAR ?</span><span class="tag">3 h</span></h2>
+<div class="card">
+<p class="eyebrow">Contexte du sujet</p>
+<div class="facts">
+<div><b>Données</b><small>UCI HAR : 30 volontaires de 19 à 48 ans, smartphone porté à la ceinture, accéléromètre et gyroscope à 50 Hz. Fenêtres de 2,56 s (128 pas) qui se chevauchent à 50 %. 6 activités : marcher, monter, descendre, assis, debout, couché.</small></div>
+<div><b>Découpage</b><small>21 sujets en entraînement, 9 autres en test. La validation doit donc, elle aussi, contenir des personnes jamais vues.</small></div>
+<div><b>Pourquoi ce sujet</b><small>Il pose exactement la question annoncée : Transformer et attention comparés aux RNN, sur les données du TP4. L'ablation de l'encodage de position teste si tu as compris ce que l'attention ne voit pas.</small></div>
+<div><b>Ce qui est attendu</b><small>Trois modèles de taille comparable (environ 73 000 paramètres), 3 seeds, 15 epochs : 9 runs d'environ 1 min sur T4. Puis un rapport qui conclut, ou qui dit pourquoi il ne peut pas conclure.</small></div>
+</div>
+<div class="btnrow"><a class="btn pri" href="https://colab.research.google.com/github/djamal2905/deep-learning-revision/blob/main/notebooks/examen-blanc-B-depart.ipynb" target="_blank" rel="noopener">Ouvrir le sujet dans Colab</a><a class="btn" href="https://colab.research.google.com/github/djamal2905/deep-learning-revision/blob/main/notebooks/examen-blanc-B-corrige.ipynb" target="_blank" rel="noopener">Ouvrir le corrigé dans Colab</a></div>
+<p class="rev-meta">Le notebook télécharge lui-même les données UCI au premier lancement.</p>
+</div>
+<div class="card">
+<p><b>Sujet.</b> Données du TP4-1 (fenêtres de 128 pas × 9 signaux, 6 activités, sujets du test absents du train). On veut savoir si un <b>encodeur Transformer</b> (self-attention, token [CLS] comme BERT) fait mieux qu'un <b>GRU</b>, et si l'<b>encodage de position</b> est nécessaire.</p>
+<p><b>Phase 1 (1 h)</b> :</p>
+<ol>
+<li>Décris les données et la tâche. Quelles classes seront faciles ou difficiles, et pourquoi (pense à la gravité dans l'accélération totale) ?</li>
+<li>Comment construire la validation ? Pourquoi un <code>random_split</code> ligne à ligne pose-t-il problème ici ?</li>
+<li>Explique ce que fait <code>_, h_n = self.gru(x)</code>, puis <code>self.linear(h_n[-1])</code>, avec les formes.</li>
+<li>Comment adapter un encodeur Transformer à cette série temporelle (entrée, position, sortie) ?</li>
+<li>Que devient le Transformer sans encodage de position ? Prédis l'effet.</li>
+<li>Compare le coût de calcul et la parallélisation des deux modèles pour L = 128.</li>
+<li>Plan complet et budget.</li>
+</ol>
+<p><span class="timer" id="tB">60:00</span> <button class="btn pri" data-timer="tB" data-min="60">Démarrer 1 h</button> <button class="btn" data-timer="tB" data-min="35">35 min (phase 5)</button> <button class="btn" data-stop="tB">Stop</button></p>
+<textarea class="draft" data-draft="B" placeholder="Brouillon (enregistré dans ce navigateur)."></textarea>
+</div>
+<details class="sol"><summary>Corrigé de la phase 1</summary>
+<ol>
+<li>7 352 fenêtres d'entraînement (21 sujets) et 2 947 de test (9 autres sujets). Chaque fenêtre dure 2,56 s, soit 128 pas à 50 Hz, avec 9 canaux : accélération du corps (3 axes), gyroscope (3), accélération totale (3). 6 classes. Faciles : couché (la gravité est sur un autre axe, posture visible même sans ordre). Difficiles : assis contre debout (postures proches), et marcher contre monter ou descendre l'escalier (dynamiques proches, l'<b>ordre</b> temporel compte).</li>
+<li>Par <b>sujet</b> : garder quelques sujets entiers du train pour la validation, pour imiter le test (nouvelles personnes). Avec un random_split, des fenêtres d'une même personne, qui se chevauchent à 50 %, sont à la fois en train et en validation : la validation est trop optimiste et peut mal choisir l'epoch. Normalisation avec les statistiques du train uniquement.</li>
+<li><code>x</code> : (B, 128, 9) avec batch_first. Le GRU lit les 128 pas et met à jour un état de taille H. <code>h_n</code> : (1, B, H), l'état après le dernier pas, qui résume la fenêtre. <code>h_n[-1]</code> : (B, H), dernière couche. Linear : (B, 6) logits. Pas de c_n (contrairement au LSTM).</li>
+<li>Chaque pas de temps est un « token » : projection linéaire 9 → d. On ajoute un vecteur [CLS] appris en tête et un encodage de position appris (129 positions), puis N couches d'encodeur, puis Linear sur la sortie de [CLS]. Même logique que BERT, mais sans pré-entraînement.</li>
+<li>Sans position, l'attention est invariante à l'ordre : le modèle voit un ensemble de mesures. Il distingue encore les postures (statistiques du signal), mais moins bien les activités où l'ordre compte. Attendu : accuracy plus basse, surtout entre marcher, monter et descendre.</li>
+<li>GRU : 128 pas séquentiels par couche, coût $O(L d^2)$. Transformer : matrice d'attention 129 × 129 par tête et par couche, coût $O(L^2 d)$, mais tout en parallèle : souvent plus rapide par epoch sur GPU pour un L modéré.</li>
+<li>Plan : 3 modèles (gru, transformer, transformer_nopos) de taille comparable (d=64, imprimer les paramètres) ; Adam lr 1e-3, batch 64, 15 epochs ; meilleure epoch en validation ; 3 seeds ; mesures : accuracy validation (moyenne ± écart-type), courbes, temps par epoch, matrice de confusion du meilleur modèle ; test une fois. Budget : 9 runs × environ 1 min sur T4.</li>
+</ol>
+</details>
+<div class="card"><p><b>Phase 4</b> : <a href="https://colab.research.google.com/github/djamal2905/deep-learning-revision/blob/main/notebooks/examen-blanc-B-depart.ipynb" target="_blank" rel="noopener"><code>examen-blanc-B-depart.ipynb</code></a>, corrigé <a href="https://colab.research.google.com/github/djamal2905/deep-learning-revision/blob/main/notebooks/examen-blanc-B-corrige.ipynb" target="_blank" rel="noopener"><code>examen-blanc-B-corrige.ipynb</code></a>. Ouvre le corrigé seulement après ta tentative.</p></div>
+<ul class="can" data-step="9">
+<li><input type="checkbox" data-k="9a"><span>Phase 1 faite et corrigée.</span></li>
+<li><input type="checkbox" data-k="9b"><span>Phase 4 faite sur Colab.</span></li>
+<li><input type="checkbox" data-k="9c"><span>Phase 5 rédigée, avec l'explication du forward du Transformer.</span></li>
+</ul>
+</section>
+
+<!-- ===================================================== 10 -->
+<section class="step" id="s10" data-s="10">
+<h2><span>10. Banque de questions et session de révision</span></h2>
+<p class="lead">Réponds à voix haute ou par écrit, puis ouvre la correction. Objectif : des réponses précises de 3 à 5 lignes.</p>
+<div class="ctx"><div><b>À quoi ça sert</b><p>S'entraîner à rédiger vite des réponses courtes et exactes, comme en phase 1.</p></div><div><b>D'où ça vient</b><p>Les questions types des étapes 1 à 6 et des deux examens blancs.</p></div><div class="exam"><b>À l'examen</b><p>La session de révision ci-dessous tire 5 questions au hasard et redonne en priorité celles que tu as marquées « à revoir ».</p></div></div>
+<div class="card" id="rev">
+<p class="eyebrow">Session de révision</p>
+<p>Cinq questions tirées au hasard. Réponds dans ta tête ou sur papier, affiche la réponse, puis dis honnêtement si tu savais. Les questions « à revoir » reviennent en priorité aux sessions suivantes.</p>
+<div class="btnrow"><button class="btn pri" type="button" id="rev-start">Lancer une session de 5 questions</button><button class="btn" type="button" id="rev-only">Seulement mes « à revoir »</button></div>
+<p class="rev-meta" id="rev-stat"></p>
+<div id="rev-box" hidden></div>
+</div>
+<h3>Toute la banque</h3>
+<div id="bank"></div>
+<ul class="can" data-step="10">
+<li><input type="checkbox" data-k="10a"><span>J'ai répondu à toute la banque sans ouvrir les corrections, puis j'ai vérifié.</span></li>
+</ul>
+</section>
+
+</main>
+</div>
+
+<script>
+const mathOpts={delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false};
+/* ---------- stockage ---------- */
+const store={get(k,d){try{const v=localStorage.getItem('dlprog:'+k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('dlprog:'+k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------- thème ---------- */
+(function(){const t=store.get('theme',null);if(t)document.documentElement.dataset.theme=t;
+document.getElementById('theme').onclick=()=>{const cur=document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');const n=cur==='dark'?'light':'dark';document.documentElement.dataset.theme=n;store.set('theme',n)}})();
+
+/* ---------- progression ---------- */
+function refreshProgress(){const all=[...document.querySelectorAll('.can input')];const done=all.filter(i=>i.checked).length;const p=all.length?Math.round(100*done/all.length):0;document.getElementById('pfill').style.width=p+'%';document.getElementById('ptxt').textContent=p+' % ('+done+'/'+all.length+')';
+document.querySelectorAll('.can[data-step]').forEach(ul=>{const s=ul.dataset.step;const ins=[...ul.querySelectorAll('input')];const a=document.querySelector('nav.side a[data-s="'+s+'"]');if(a)a.classList.toggle('done',ins.length>0&&ins.every(i=>i.checked))})}
+document.querySelectorAll('.can input').forEach(i=>{i.checked=store.get('c:'+i.dataset.k,false);i.onchange=()=>{store.set('c:'+i.dataset.k,i.checked);refreshProgress()}});
+
+/* ---------- brouillons ---------- */
+document.querySelectorAll('textarea[data-draft]').forEach(t=>{t.value=store.get('d:'+t.dataset.draft,'');t.oninput=()=>store.set('d:'+t.dataset.draft,t.value)});
+
+/* ---------- minuteurs ---------- */
+const timers={};
+document.querySelectorAll('[data-timer]').forEach(b=>b.onclick=()=>{const id=b.dataset.timer;clearInterval(timers[id]);let s=+b.dataset.min*60;const el=document.getElementById(id);const show=()=>{el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');el.style.color=s<=300?'var(--ko)':''};show();timers[id]=setInterval(()=>{s=s-1;show();if(s<=0){clearInterval(timers[id]);el.textContent='Temps écoulé'}},1000)});
+document.querySelectorAll('[data-stop]').forEach(b=>b.onclick=()=>clearInterval(timers[b.dataset.stop]));
+
+/* ---------- quiz ---------- */
+const QUIZ={
+diag:[
+["Dans le TP4-1, nn.LSTM renvoie :",["output, h_n","output, (h_n, c_n)","h_n seulement","(output, h_n), c_n"],1,"Le LSTM a deux états : caché h et cellule c. Le GRU renvoie output, h_n."],
+["On choisit le nombre d'epochs d'après :",["la loss d'entraînement","l'accuracy test","la loss ou l'accuracy de validation","le temps disponible seulement"],2,"Toute sélection se fait en validation ; le test est regardé une fois, à la fin."],
+["Dans BERT, le vecteur utilisé pour classifier est :",["la moyenne des tokens","celui de [SEP]","celui de [CLS]","celui du dernier token"],2,"Document, section 4 : une couche linéaire sur le vecteur de [CLS]."],
+["Le masque d'attention de BERT sert à :",["cacher 15 % des tokens","empêcher de voir le futur","annuler les poids d'attention sur le padding","choisir la longueur maximale"],2,"Section 2. Cacher 15 % des tokens, c'est le MLM ; empêcher de voir le futur, c'est le masque causal de GPT."],
+["Le principal avantage d'un Transformer sur un RNN à l'entraînement :",["moins de paramètres","calcul parallèle sur toutes les positions","coût linéaire en longueur","pas besoin de position"],1,"Le coût est même quadratique en longueur, mais tout se calcule en parallèle."],
+["Deux modèles : 0,85 ± 0,02 et 0,86 ± 0,02 sur 3 seeds. Conclusion :",["le second est meilleur","le premier est meilleur","pas de différence détectable","il faut regarder le test pour trancher"],2,"Écart de 0,01, inférieur à l'écart-type."],
+["Geler l'encodeur, en PyTorch :",["model.eval()","torch.no_grad() pendant l'entraînement","p.requires_grad = False pour chaque paramètre de l'encodeur","optimizer.zero_grad()"],2,"model.eval() coupe dropout et batchnorm, mais n'empêche pas l'optimiseur de modifier les poids."],
+["Le pré-entraînement de BERT aide le plus quand :",["il y a beaucoup de labels","il y a peu de labels","les phrases sont longues","on gèle l'encodeur"],1,"Section 5 : l'avantage est maximal quand les données labellisées sont rares."]],
+meth:[
+["La normalisation des entrées doit utiliser :",["les statistiques de tout le jeu","celles du train seulement","celles du test","celles de chaque batch"],1,"Les statistiques du test ou de la validation feraient fuiter de l'information."],
+["Un seul run donne 91,2 % contre 90,8 %. On peut :",["conclure","ne pas conclure : variabilité non mesurée","conclure si la seed est fixée","conclure si le test est grand"],1,"Fixer la seed rend le run reproductible, pas représentatif."],
+["La loss de validation remonte alors que celle d'entraînement baisse :",["sous-apprentissage","learning rate trop faible","surapprentissage","bug de données"],2,"Remède : early stopping, régularisation, plus de données."],
+["Les deux losses oscillent violemment et ne descendent pas :",["learning rate trop grand","surapprentissage","trop de données","pas assez d'epochs"],0,"Réduire le lr, vérifier la normalisation."],
+["Pour comparer « pré-entraîné » et « from scratch », il faut :",["deux architectures différentes","la même architecture","plus d'epochs pour from scratch seulement","le test pour régler les lr"],1,"Ne faire varier qu'un facteur : l'initialisation."],
+["L'augmentation de données s'applique :",["au train seulement","au train et à la validation","à tous les ensembles","au test seulement"],0,"Le but est l'invariance pendant l'apprentissage ; l'évaluation se fait sur les vraies données."]],
+pt:[
+["CrossEntropyLoss attend :",["des probabilités et des labels float","des logits et des labels int64 de 0 à C-1","des logits et des labels one-hot float seulement","des probabilités et des labels de 1 à C"],1,"Pas de softmax avant ; labels HAR : y - 1."],
+["Pourquoi optimizer.zero_grad() ?",["réinitialiser les poids","PyTorch accumule les gradients","mettre le lr à zéro","passer en mode évaluation"],1,""],
+["Rôle de __getitem__ d'un Dataset :",["renvoyer un exemple d'indice idx","renvoyer un batch","mélanger les données","renvoyer la taille"],0,"Midterm 2, Q2-1. Le DataLoader appelle __getitem__ et empile les exemples."],
+["Sortie de Conv2d(1, 10, kernel_size=5) sur une image 1 × 32 × 32 :",["1 × 28 × 28","10 × 32 × 32","10 × 28 × 28","10 × 27 × 27"],2,"32 − 5 + 1 = 28. Le nombre de canaux de sortie = out_channels (midterm 1, question ouverte 2)."],
+["tensor.to('cuda') :",["change le dtype","copie le tenseur sur le GPU","crée un tableau 3D","copie sur le CPU"],1,""],
+["Avec BCEWithLogitsLoss, la classe prédite est :",["logit > 0,5","logit > 0","sigmoid(logit) > 0","argmax(logit)"],1,"logit > 0 ⇔ sigmoïde > 0,5 (TP4-2 : pred > 0)."]],
+rnn:[
+["nn.GRU(9, 100, batch_first=True) sur (8, 128, 9) : forme de h_n ?",["(8, 128, 100)","(8, 100)","(1, 8, 100)","(8, 1, 100)"],2,"batch_first ne change pas h_n : (couches × directions, B, H)."],
+["Bidirectionnel, 1 couche, H=100 : forme de output ?",["(B, L, 100)","(B, L, 200)","(2, B, 100)","(B, 200)"],1,"Avant et arrière concaténés."],
+["Nombre de paramètres de nn.GRU(9, 100) :",["11 100","33 300","44 400","30 900"],1,"3 × (100·9 + 100² + 2·100)."],
+["Le GRU par rapport au LSTM :",["a un état de cellule en plus","fusionne oubli et entrée en une porte de mise à jour","n'a pas de portes","ne peut pas être bidirectionnel"],1,""],
+["Pourquoi un GRU bidirectionnel dans TP4-2 ?",["pour aller deux fois plus vite","le sens d'un mot dépend du contexte à gauche et à droite","pour doubler les données","parce que GloVe l'exige"],1,""],
+["pack_padded_sequence sert à :",["compresser le modèle","faire ignorer le padding au RNN","trier les phrases","accélérer le GPU seulement"],1,"Équivalent du masque d'attention."]],
+att:[
+["Dans la cross-attention du décodeur :",["Q, K, V viennent du décodeur","Q vient de l'encodeur, K et V du décodeur","Q vient du décodeur, K et V de l'encodeur","il n'y a pas de V"],2,"CM3, slide 315."],
+["On divise par √d_k pour :",["normaliser les valeurs","éviter que le softmax sature","rendre l'attention causale","réduire les paramètres"],1,""],
+["Sans encodage de position, une self-attention :",["est causale","est invariante (équivariante) par permutation des tokens","ne peut pas être entraînée","double ses paramètres"],1,"Le modèle voit un ensemble."],
+["Coût d'une couche de self-attention en longueur L :",["O(L)","O(L log L)","O(L²)","O(1)"],2,""],
+["Le masque causal permet :",["d'ignorer le padding","l'entraînement parallèle sans tricher sur le futur","de réduire la mémoire","le pré-entraînement de BERT"],1,"Chaque position ne dépend que du passé."],
+["Chaque ligne de la matrice d'attention :",["somme à 1 (après softmax)","somme à 0","est symétrique","contient des valeurs négatives"],0,""]],
+bert:[
+["« Bidirectionnel » signifie :",["deux encodeurs","le vecteur d'un token dépend des mots à gauche et à droite","on lit la phrase deux fois","deux langues"],1,"Section 1."],
+["L'embedding d'entrée d'un token est :",["token seulement","token + position","token × position","position seulement"],1,"Section 2."],
+["Combien de vecteurs BERT renvoie-t-il ?",["un seul","un par token","un par phrase","deux"],1,"Section 3."],
+["Proportion de tokens masqués dans le MLM :",["5 %","15 %","50 %","100 %"],1,""],
+["Le next-sentence prediction utilise :",["le vecteur de [SEP]","le vecteur de [CLS]","tous les vecteurs","le décodeur"],1,""],
+["Données du pré-entraînement :",["textes labellisés","livres et Wikipedia anglais, non labellisés","SST-2","traductions"],1,""],
+["Encodeur gelé par rapport au fine-tuning complet :",["plus cher et meilleur","moins cher, généralement moins bon","identique","impossible avec BERT"],1,"Section 4."]],
+tl:[
+["On retire la dernière couche d'un modèle pré-entraîné sur 10 classes car :",["elle est trop lente","elle est spécifique à l'ancienne tâche à 10 sorties","elle contient le dropout","elle n'a pas de poids"],1,""],
+["Learning rate du fine-tuning complet, par rapport à from scratch :",["plus grand","plus petit","identique obligatoirement","nul"],1,"Pour ne pas détruire les représentations apprises."],
+["Le but principal du dropout :",["accélérer l'entraînement","réduire le surapprentissage","normaliser","réduire la mémoire"],1,"Midterm 1, Q7."],
+["Le transfer learning est le plus utile quand :",["la tâche cible a beaucoup de labels","la tâche cible a peu de labels","les classes sont déséquilibrées","on n'a pas de GPU"],1,""]]};
+
+function renderQuiz(el){const key=el.dataset.quiz;const qs=QUIZ[key];if(!qs)return;
+let h='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><b>Quiz ('+qs.length+' questions)</b><span><button class="btn pri qcheck">Corriger</button> <button class="btn qreset">Recommencer</button><span class="score"></span></span></div>';
+qs.forEach((q,i)=>{h+='<div class="q"><div><b>'+(i+1)+'.</b> '+q[0]+'</div>';q[1].forEach((o,j)=>{h+='<label class="opt"><input type="radio" name="'+key+i+'" value="'+j+'">'+o+'</label>'});h+=q[3]?'<div class="exp">'+q[3]+'</div>':'';h+='</div>'});
+el.innerHTML=h;
+el.querySelector('.qcheck').onclick=()=>{let ok=0;qs.forEach((q,i)=>{const r=el.querySelector('input[name="'+key+i+'"]:checked');const labs=el.querySelectorAll('input[name="'+key+i+'"]');labs.forEach(x=>x.parentElement.classList.remove('good','bad'));labs[q[2]].parentElement.classList.add('good');if(r){if(+r.value===q[2])ok++;else r.parentElement.classList.add('bad')}});el.classList.add('checked');el.querySelector('.score').textContent=' '+ok+'/'+qs.length;store.set('q:'+key,ok+'/'+qs.length);if(window.renderMathInElement)renderMathInElement(el,mathOpts)};
+el.querySelector('.qreset').onclick=()=>{el.classList.remove('checked');el.querySelectorAll('input').forEach(x=>{x.checked=false;x.parentElement.classList.remove('good','bad')});el.querySelector('.score').textContent=''};
+const prev=store.get('q:'+key,null);if(prev)el.querySelector('.score').textContent=' dernier score : '+prev}
+document.querySelectorAll('.quiz[data-quiz]').forEach(renderQuiz);
+
+/* ---------- courbes ---------- */
+const CURVES=[
+{f:e=>[1.6*Math.exp(-e/3)+0.15,1.5*Math.exp(-e/3.5)+0.25+0.012*Math.max(0,e-6)**1.6],a:"overfit"},
+{f:e=>[1.7-0.015*e+0.02*Math.sin(e),1.72-0.012*e+0.02*Math.cos(e)],a:"under"},
+{f:e=>[0.9+0.35*Math.abs(Math.sin(1.7*e))+0.15*Math.sin(5*e),1.0+0.4*Math.abs(Math.cos(1.3*e))],a:"lrhigh"},
+{f:e=>[1.6*Math.exp(-e/2.5)+0.2,1.5*Math.exp(-e/2.6)+0.28],a:"good"},
+{f:e=>[1.75-0.006*e,1.76-0.005*e],a:"lrlow"},
+{f:e=>[1.4*Math.exp(-e/3)+0.32,1.2*Math.exp(-e/3)+0.22],a:"dropout"}];
+const CHOICES={overfit:"Surapprentissage : early stopping, régularisation",under:"Sous-apprentissage : modèle trop simple ou trop peu d'epochs",lrhigh:"Learning rate trop grand : oscillations",good:"Bon ajustement : les deux convergent, écart stable",lrlow:"Learning rate trop petit : descente très lente",dropout:"Validation sous le train : normal avec dropout"};
+function curveSVG(c){const W=270,H=150,P=24,E=20;let tr=[],va=[];for(let e=0;e<E;e++){const[a,b]=c.f(e);tr.push(a);va.push(b)}const mx=2;const X=e=>P+e*(W-P-6)/(E-1),Y=v=>H-P-(Math.min(v,mx)/mx)*(H-P-8);
+const pl=a=>a.map((v,e)=>X(e).toFixed(1)+','+Y(v).toFixed(1)).join(' ');
+return '<svg viewBox="0 0 '+W+' '+H+'" width="100%"><path d="M'+P+' 6V'+(H-P)+'H'+(W-4)+'" style="stroke:var(--mute);fill:none"/><text x="'+(W/2)+'" y="'+(H-6)+'" text-anchor="middle">epochs</text><text x="4" y="14">loss</text><polyline points="'+pl(tr)+'" style="fill:none;stroke:#1f77b4;stroke-width:2"/><polyline points="'+pl(va)+'" style="fill:none;stroke:#ff7f0e;stroke-width:2"/></svg>'}
+(function(){const box=document.getElementById('curves');let html='';CURVES.forEach((c,i)=>{html+='<div class="cv">'+curveSVG(c)+'<select data-i="'+i+'"><option value="">Diagnostic ?</option>'+Object.entries(CHOICES).map(([k,v])=>'<option value="'+k+'">'+v+'</option>').join('')+'</select><div class="fb"></div></div>'});box.innerHTML=html;
+box.querySelectorAll('select').forEach(s=>s.onchange=()=>{const c=CURVES[+s.dataset.i];const fb=s.nextElementSibling;if(!s.value){fb.textContent='';return}fb.innerHTML=s.value===c.a?'<span class="ok">Correct.</span>':'<span class="ko">Non.</span> Regarde l\'écart entre les courbes et leur pente.';let n=0;box.querySelectorAll('select').forEach(x=>{if(x.value===CURVES[+x.dataset.i].a)n++});document.getElementById('curve-score').innerHTML='<b>Score : '+n+'/'+CURVES.length+'</b>'})})();
+
+/* ---------- code TP4 commenté ---------- */
+const CODE=[
+["class LSTMNetwork(nn.Module):","Le modèle hérite de nn.Module : PyTorch enregistre automatiquement toutes les couches déclarées comme attributs, donc model.parameters() les trouve et l'optimiseur peut les mettre à jour."],
+["    def __init__(self, n_channels, n_classes, n_hidden=100):","n_channels = 9 signaux par pas de temps, n_classes = 6 activités, n_hidden = taille de l'état caché."],
+["        super().__init__()","Initialise nn.Module. Sans cette ligne, l'affectation de self.lstm plante, car le registre des sous-modules n'existe pas encore."],
+["        self.lstm = nn.LSTM(n_channels, n_hidden, batch_first=True)","Couche récurrente : input_size = 9 (features à chaque pas), hidden_size = 100. batch_first=True : l'entrée est (batch, temps, features), le format renvoyé par le DataLoader. 4 × (100·9 + 100² + 2·100) = 44 400 paramètres."],
+["        self.linear = nn.Linear(n_hidden, n_classes)","Tête de classification : 100 vers 6 logits (606 paramètres)."],
+["        self.loss_fn_mean = nn.CrossEntropyLoss(reduction='mean')","Perte moyenne sur le batch, pour l'entraînement : l'échelle du gradient ne dépend pas de la taille du batch."],
+["        self.loss_fn_sum = nn.CrossEntropyLoss(reduction='sum')","Perte sommée, pour la validation : on additionne tous les batchs puis on divise par la taille du dataset, ce qui donne la moyenne exacte même si le dernier batch est plus petit."],
+["    def forward(self, x):","x : (B, 128, 9)."],
+["        _, (h_n, _) = self.lstm(x)","Le LSTM renvoie output (B, 128, 100), tous les états, et (h_n, c_n), chacun de forme (1, B, 100). On ne garde que h_n : l'état caché après le dernier pas, qui résume la séquence. Pour un GRU : _, h_n = self.gru(x)."],
+["        y = self.linear(h_n[-1])","h_n[-1] : dernière couche, (B, 100). Linear donne (B, 6) logits, sans softmax, car CrossEntropyLoss l'applique elle-même."],
+["        return y",""],
+["    def configure_optimizers(self):",""],
+["        return torch.optim.Adam(self.parameters())","Adam avec ses valeurs par défaut (lr = 1e-3) : moments d'ordre 1 et 2 du gradient, donc un pas adaptatif par paramètre (midterm 1, Q27)."],
+["    def training_step(self, batch):",""],
+["        X, y = batch","Le Trainer a déjà mis X et y sur le device."],
+["        pred = self(X)","Appelle forward (via __call__)."],
+["        return self.loss_fn_mean(pred, y)","Renvoie un tenseur scalaire qui garde le graphe : le Trainer appellera loss.backward()."],
+["    def validation_step(self, batch):",""],
+["        with torch.no_grad():","Pas de graphe de calcul : plus rapide, moins de mémoire, aucun risque de mettre à jour quoi que ce soit."],
+["            pred = self(X)",""],
+["            loss = self.loss_fn_sum(pred, y).item()",".item() convertit en float Python : on peut accumuler sans garder de tenseurs."],
+["        return loss, pred.argmax(1), y","Classe prédite = indice du plus grand logit, utilisé pour l'accuracy."],
+["# ---- Trainer.fit ----",""],
+["model = model.to(self.device)","Copie les poids sur le GPU s'il y en a un."],
+["optimizer = model.configure_optimizers()","Créé après le .to(device), pour pointer vers les bons tenseurs."],
+["for epoch in range(self.max_epochs):","Une epoch = un passage complet sur le train (midterm, QCM 1)."],
+["    model.train()","Mode entraînement : dropout et batchnorm actifs. Ici il n'y en a pas, mais c'est un bon réflexe."],
+["    for X, y in pbar:","Itère sur les mini-batchs mélangés (shuffle=True pour le train)."],
+["        X = X.to(self.device); y = y.to(self.device)","Données sur le même device que le modèle."],
+["        loss = model.training_step((X, y))","Forward + loss."],
+["        optimizer.zero_grad()","Remise à zéro des gradients, qui s'accumulent par défaut."],
+["        loss.backward()","Rétropropagation dans le temps (BPTT) : gradient de la loss par rapport à tous les poids."],
+["        optimizer.step()","Mise à jour des poids par Adam."],
+["    model.eval()","Mode évaluation avant la validation."],
+["    val_loss = test_loss / size; val_acc = correct / size","Moyennes exactes sur tout le jeu de validation. Elles sont affichées par LiveLossPlot à chaque epoch, pour lire le surapprentissage."],
+["evaluate(test_dataloader, lstm, device)","Une seule fois, à la fin : environ 88,8 % dans la solution. Le test contient 9 sujets jamais vus."]];
+(function(){const box=document.getElementById('codex');box.innerHTML='<pre style="margin:0;padding:6px 0">'+CODE.map((c,i)=>'<span class="ln" data-i="'+i+'">'+c[0].replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>').join('')+'</pre>';
+box.querySelectorAll('.ln').forEach(l=>l.onclick=()=>{box.querySelectorAll('.ln').forEach(x=>x.classList.remove('on'));l.classList.add('on');const c=CODE[+l.dataset.i];document.getElementById('codex-exp').innerHTML='<code>'+c[0].trim().replace(/</g,'&lt;')+'</code><p>'+(c[1]||'Ligne de structure, rien de particulier à dire.')+'</p>'})})();
+
+/* ---------- calculateur d'attention ---------- */
+(function(){const box=document.getElementById('att');
+const init={q:[[1,0],[0,1],[1,1]],k:[[1,0],[0,1],[-1,0]],v:[[1,0],[0,1],[1,1]]};
+const names=['t1','t2','t3'];
+let h='<div class="tw"><table><tr><th>token</th><th>requête q</th><th>clé k</th><th>valeur v</th></tr>';
+for(let i=0;i<3;i++){h+='<tr><th>'+names[i]+'</th>';['q','k','v'].forEach(m=>{h+='<td>'+[0,1].map(j=>'<input type="number" step="0.5" data-m="'+m+'" data-i="'+i+'" data-j="'+j+'" value="'+init[m][i][j]+'">').join(' ')+'</td>'});h+='</tr>'}
+h+='</table></div><label><input type="checkbox" id="att-causal"> masque causal (GPT)</label> &nbsp; <label><input type="checkbox" id="att-pad"> t3 est du padding (masque BERT)</label> &nbsp; <label><input type="checkbox" id="att-scale" checked> diviser par √d_k</label><div id="att-out"></div>';
+box.innerHTML=h;
+function calc(){const g=(m,i,j)=>parseFloat(box.querySelector('input[data-m="'+m+'"][data-i="'+i+'"][data-j="'+j+'"]').value)||0;
+const causal=document.getElementById('att-causal').checked,pad=document.getElementById('att-pad').checked,sc=document.getElementById('att-scale').checked?Math.SQRT2:1;
+let out='<div class="tw"><table class="heat"><tr><th>q \\ k</th>'+names.map(n=>'<th>'+n+'</th>').join('')+'<th>sortie Σ α v</th></tr>';
+for(let i=0;i<3;i++){let s=[];for(let j=0;j<3;j++){let val=(g('q',i,0)*g('k',j,0)+g('q',i,1)*g('k',j,1))/sc;if((causal&&j>i)||(pad&&j===2))val=-Infinity;s.push(val)}
+const m=Math.max(...s);const e=s.map(x=>x===-Infinity?0:Math.exp(x-m));const Z=e.reduce((a,b)=>a+b,0);const a=e.map(x=>x/Z);
+const o=[0,1].map(d=>a.reduce((acc,w,j)=>acc+w*g('v',j,d),0));
+out+='<tr><th>'+names[i]+(pad&&i===2?' (pad)':'')+'</th>'+a.map(w=>'<td style="background:color-mix(in srgb,var(--acc) '+Math.round(w*70)+'%,transparent)">'+w.toFixed(3)+'</td>').join('')+'<td>('+o.map(x=>x.toFixed(3)).join(' ; ')+')</td></tr>'}
+out+='</table></div><p class="lead" style="font-size:.9rem">Chaque ligne somme à 1. Coche le masque causal : le triangle supérieur passe à 0, et t1 ne regarde que lui-même. Coche le padding : la colonne t3 passe à 0, et les sorties de t1 et t2 ne dépendent plus de t3. Décoche √d_k et multiplie les requêtes par 4 : le softmax sature.</p>';
+document.getElementById('att-out').innerHTML=out}
+box.addEventListener('input',calc);calc()})();
+
+/* ---------- cartes BERT ---------- */
+const FC=[
+["Pourquoi un encodeur seul suffit pour classifier ?","La sortie est une seule étiquette, pas une phrase : pas besoin de décodeur pour générer une séquence."],
+["Qu'est-ce que BERT, structurellement ?","Une pile de couches d'encodeur Transformer (self-attention puis feed-forward), sans décodeur, pré-entraînée."],
+["Que veut dire « bidirectionnel » ?","Le vecteur calculé pour un token dépend des mots à sa gauche et à sa droite."],
+["Comment le texte est-il découpé ?","En sous-mots (WordPiece) ; chaque token est remplacé par son indice."],
+["Rôle de [CLS] et de [SEP] ?","[CLS] est placé au début de chaque entrée ; [SEP] marque la fin d'une phrase ou sépare deux phrases."],
+["Embedding d'entrée d'un token ?","Somme d'un embedding de token et d'un embedding de position."],
+["Que fait-on dans un mini-batch de longueurs différentes ?","On padde les phrases à la même longueur avec un token de padding, et on fournit un masque d'attention (1 = vrai token, 0 = padding)."],
+["Effet du masque d'attention ?","Tout poids d'attention sur une position de padding est mis à 0 : les vecteurs des vrais tokens ne dépendent pas de la quantité de padding."],
+["Que renvoie BERT ?","Un vecteur latent (embedding contextuel) par token, autant que de tokens en entrée, chacun calculé par attention sur tous les tokens."],
+["Pourquoi le vecteur de [CLS] ?","Il peut résumer toute l'entrée. On ajoute une couche linéaire dessus pour obtenir les scores de classe (article, section 4.1)."],
+["Qu'est-ce que le fine-tuning ?","Entraîner le modèle sur les données labellisées de la tâche, en partant des poids appris au pré-entraînement."],
+["Les deux variantes de fine-tuning ?","(1) Tout le réseau est entraîné (encodeur + nouvelle couche). (2) Encodeur gelé : p.requires_grad = False pour chacun de ses paramètres ; seule la couche linéaire est entraînée."],
+["Gelé ou non : compromis ?","Le gel est moins cher, mais un encodeur gelé ne peut pas adapter ses vecteurs à la tâche : accuracy généralement plus basse."],
+["Sur quelles données BERT est-il pré-entraîné ?","Une très grande quantité de texte non labellisé : des livres et Wikipedia en anglais."],
+["Masked language modelling ?","15 % des tokens sont cachés ; le modèle doit les prédire à partir de leur contexte."],
+["Next-sentence prediction ?","Étant donnés deux segments A et B, prédire si B suit vraiment A dans le texte original. Utilise le vecteur de [CLS]."],
+["Pourquoi aucun label humain ?","Le texte lui-même fournit les réponses (le token caché, la phrase suivante) : apprentissage auto-supervisé."],
+["Qu'a appris l'encodeur avant la tâche ?","Des connaissances générales sur la langue : le sens des mots, la façon dont ils se combinent dans une phrase."],
+["Conséquence pour les labels ?","Un encodeur pré-entraîné a généralement besoin de beaucoup moins d'exemples labellisés que la même architecture entraînée from scratch."],
+["Quand l'avantage est-il le plus grand ?","Quand les données labellisées sont rares. Il diminue quand elles abondent, car un modèle from scratch peut alors apprendre davantage des labels eux-mêmes."],
+["Référence ?","Devlin, Chang, Lee, Toutanova, 2019, « BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding », sections 3 et 4.1."]];
+(function(){const box=document.getElementById('fc');const known=store.get('fc',{});
+box.innerHTML=FC.map((c,i)=>'<div class="fc'+(known[i]?' known':'')+'" data-i="'+i+'"><div class="a">'+c[0]+'</div><div class="b">'+c[1]+'</div><span class="mk">'+(known[i]?'je sais':'')+'</span></div>').join('');
+const score=()=>{const k=store.get('fc',{});const n=Object.values(k).filter(Boolean).length;document.getElementById('fc-score').textContent=n+'/'+FC.length+' connues'};
+box.querySelectorAll('.fc').forEach(c=>{c.onclick=()=>c.classList.toggle('flip');c.ondblclick=()=>{const k=store.get('fc',{});const i=c.dataset.i;k[i]=!k[i];store.set('fc',k);c.classList.toggle('known',!!k[i]);c.querySelector('.mk').textContent=k[i]?'je sais':'';score()}});
+document.getElementById('fc-reset').onclick=()=>box.querySelectorAll('.fc').forEach(c=>c.classList.remove('flip'));score()})();
+
+/* ---------- banque de questions ---------- */
+const BANK=[
+["Méthodo","Pourquoi ne regarde-t-on le test qu'une fois ?","Chaque fois qu'on prend une décision au vu du test, on l'adapte au test : le score final devient une estimation optimiste. Une seule évaluation, après avoir figé tous les choix sur la validation, donne une estimation non biaisée de la performance sur de nouvelles données."],
+["Méthodo","Que fait varier la seed, et que rapporter ?","L'initialisation des poids, l'ordre des mini-batchs, le dropout, et éventuellement le sous-échantillon tiré. On rapporte la moyenne ± l'écart-type sur 3 à 5 seeds, et on ne conclut que si l'écart dépasse nettement la variabilité."],
+["Méthodo","Comment choisir le nombre d'epochs sans tricher ?","On suit la métrique de validation à chaque epoch et on garde les poids de la meilleure epoch (early stopping), avec la même règle pour tous les modèles comparés. Le nombre maximal d'epochs est fixé à l'avance."],
+["Méthodo","Accuracy ou F1 ?","L'accuracy convient si les classes sont équilibrées (SST-2, HAR à peu près). Si une classe est rare, on prend la F1 macro ou l'accuracy équilibrée, et on regarde la matrice de confusion."],
+["TP4","Pourquoi h_n et pas output pour classer une fenêtre HAR ?","La sortie est une étiquette pour toute la séquence : h_n, l'état après le dernier pas, résume les 128 pas. output contient les 128 états, utiles pour une prédiction par pas de temps ou par mot (TP4-2)."],
+["TP4","Pourquoi y - 1 ?","Les activités sont codées de 1 à 6, et CrossEntropyLoss attend des indices de 0 à C − 1, en int64."],
+["TP4","Pourquoi collate_fn=lambda x: x dans TP4-2 ?","Les phrases ont des longueurs différentes : le DataLoader ne peut pas les empiler en un tenseur. La fonction identité renvoie une liste de tuples ; le padding et le packing sont faits dans forward."],
+["TP4","Comment récupère-t-on la représentation du mot à classer dans TP4-2 ?","Après unpack, output_unpacked a la forme (L, B, 200) (pas de batch_first). Pour chaque phrase i, on prend output_unpacked[idx_i, i] : états avant et arrière à la position du mot, concaténés (200), puis Linear(200, 1)."],
+["TP4","LSTM ou GRU : lequel choisir et pourquoi ?","Performances souvent proches sur des séquences de longueur moyenne. Le GRU a 25 % de paramètres en moins (3 blocs au lieu de 4), il est plus rapide et surapprend un peu moins avec peu de données. Sans expérience, on ne peut pas dire lequel est meilleur ici : c'est à mesurer."],
+["Transformer","Pourquoi un Transformer s'entraîne-t-il plus vite qu'un RNN sur GPU ?","Toutes les positions sont calculées en même temps par des produits matriciels : pas de dépendance séquentielle entre h_t et h_(t-1). Pour la génération, le masque causal et le teacher forcing permettent cette parallélisation à l'entraînement."],
+["Transformer","Inconvénient de l'attention pour les longues séquences ?","La matrice d'attention est L × L : le coût en calcul et en mémoire est quadratique en longueur. BERT est limité à 512 positions."],
+["Transformer","Différence entre self-attention, cross-attention et attention causale ?","Self : Q, K, V viennent de la même séquence. Cross : Q vient du décodeur, K et V de l'encodeur. Causale : self-attention où la position i ne voit que j ≤ i."],
+["Transformer","Pourquoi un Transformer from scratch peut-il perdre contre un GRU sur peu de données ?","Il a peu de biais inductif : il doit apprendre l'ordre et la localité à partir des données. Le GRU les impose par construction. Avec peu d'exemples, ce biais aide."],
+["BERT","Que se passe-t-il si on oublie l'attention_mask ?","Le padding reçoit des poids d'attention : le vecteur de [CLS] dépend de la longueur de padding, donc de la composition du batch. Les prédictions deviennent instables, et la même phrase peut recevoir des scores différents selon le batch."],
+["BERT","Pourquoi un lr petit (de l'ordre de 2e-5 à 5e-5) pour le fine-tuning complet ?","Les poids sont déjà bons : un grand pas détruirait les représentations pré-entraînées (oubli catastrophique). La couche linéaire seule (encodeur gelé) supporte un lr plus grand (1e-3)."],
+["BERT","Comment vérifier dans le notebook que le gel fonctionne ?","Imprimer le nombre de paramètres avec requires_grad=True (514 pour une tête 256 → 2), et vérifier qu'un poids de l'encodeur est identique avant et après une epoch."],
+["BERT","Pourquoi comparer à « même architecture from scratch » et pas seulement au GRU ?","Pour isoler l'effet du pré-entraînement : seule l'initialisation change. Contre le GRU, une différence pourrait venir de l'architecture autant que du pré-entraînement."],
+["Transfer","Quand préférer geler ?","Très peu de labels, peu de temps de calcul, ou besoin d'un entraînement très rapide (on peut précalculer les vecteurs [CLS] une seule fois). On accepte un plafond de performance plus bas."],
+["Rapport","Ton modèle A bat B de 0,3 point sur un run. Comment l'écris-tu ?","« Sur un seul run, A obtient 0,3 point de plus que B ; cet écart est du même ordre que la variabilité habituelle entre seeds, il ne permet pas de conclure. Il faudrait répéter avec plusieurs seeds. »"],
+["Rapport","Ton plan prévoyait 3 seeds, tu n'en as fait que 2. Que fais-tu ?","Je le dis explicitement, avec la raison (temps), je rapporte les deux valeurs (pas seulement la moyenne), et j'adapte la prudence des conclusions."]];
+(function(){const box=document.getElementById('bank');const cats=[...new Set(BANK.map(b=>b[0]))];
+box.innerHTML=cats.map(c=>'<h3>'+c+'</h3>'+BANK.filter(b=>b[0]===c).map(b=>'<div class="ex"><div class="h">'+b[1]+'</div><details class="sol"><summary>Réponse attendue</summary><p>'+b[2]+'</p></details></div>').join('')).join('')})();
+
+
+/* ---------- session de révision ---------- */
+(function(){const box=document.getElementById('rev-box'),stat=document.getElementById('rev-stat');
+const todo=()=>store.get('rev',[]).filter(i=>i<BANK.length);
+const showStat=()=>{const n=todo().length;stat.textContent=BANK.length+' questions dans la banque, '+n+' marquée'+(n>1?'s':'')+' « à revoir ».';document.getElementById('rev-only').disabled=n===0};
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let queue=[],pos=0,ok=0;
+function start(onlyTodo){const r=shuffle(todo());const rest=shuffle(BANK.map((_,i)=>i).filter(i=>!r.includes(i)));queue=(onlyTodo?r:r.concat(rest)).slice(0,5);pos=0;ok=0;box.hidden=false;render()}
+function render(){if(pos>=queue.length){box.innerHTML='<p class="rev-q">Session terminée : '+ok+'/'+queue.length+' sues.</p><p class="rev-meta">Relance une session plus tard, les questions manquées reviendront en premier.</p>';showStat();return}
+const b=BANK[queue[pos]];box.innerHTML='<p class="rev-meta">Question '+(pos+1)+'/'+queue.length+' · '+b[0]+'</p><p class="rev-q">'+b[1]+'</p><div class="btnrow"><button class="btn" type="button" id="rev-show">Afficher la réponse</button></div>';
+document.getElementById('rev-show').onclick=()=>{box.insertAdjacentHTML('beforeend','<div class="rev-a" style="margin-top:10px">'+b[2]+'</div><div class="btnrow"><button class="btn" type="button" data-r="1">Je savais</button><button class="btn" type="button" data-r="0">À revoir</button></div>');document.getElementById('rev-show').remove();
+if(window.renderMathInElement)renderMathInElement(box,mathOpts);
+box.querySelectorAll('[data-r]').forEach(x=>x.onclick=()=>{const i=queue[pos];let s=todo().filter(v=>v!==i);if(x.dataset.r==='0')s.push(i);else ok++;store.set('rev',s);pos++;render()})}}
+document.getElementById('rev-start').onclick=()=>start(false);document.getElementById('rev-only').onclick=()=>start(true);showStat()})();
+
+/* ---------- réinitialisation ---------- */
+(function(){const b=document.getElementById('reset-all');let armed=false;b.onclick=()=>{if(!armed){armed=true;b.textContent='Confirmer : tout effacer';setTimeout(()=>{armed=false;b.textContent='Réinitialiser ma progression'},4000);return}
+try{Object.keys(localStorage).filter(k=>k.startsWith('dlprog:')&&k!=='dlprog:theme').forEach(k=>localStorage.removeItem(k))}catch(e){}location.reload()}})();
+
+/* ---------- navigation active ---------- */
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('nav.side a').forEach(a=>a.style.background='');const a=document.querySelector('nav.side a[data-s="'+e.target.dataset.s+'"]');if(a)a.style.background='var(--acc-soft)'}})},{rootMargin:'-40% 0px -55% 0px'});
+document.querySelectorAll('section.step').forEach(s=>obs.observe(s));
+
+/* ---------- maths ---------- */
+window.addEventListener('load',()=>{if(window.renderMathInElement)renderMathInElement(document.body,mathOpts)});
+refreshProgress();
+</script>
+</body>
+</html>
