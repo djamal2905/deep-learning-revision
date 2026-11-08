@@ -74,7 +74,7 @@ td.n{font-variant-numeric:tabular-nums;text-align:right}
 
 <section id="setup">
   <h1>Le cours de Deep Learning, en QCM</h1>
-  <p class="lead">Toutes les notions du cours, chapitre par chapitre : MLP, optimisation, CNN, RNN, autoencodeurs, GAN, diffusion, Transformers, BERT et méthodologie. Chaque réponse est expliquée. Ta progression reste dans ce navigateur.</p>
+  <p class="lead">Toutes les notions du cours, chapitre par chapitre : MLP, optimisation, CNN, RNN, autoencodeurs, GAN, diffusion, Transformers, BERT, méthodologie, et un chapitre complémentaire sur la distillation (<a href="distillation.html">mini-cours</a>). Chaque réponse est expliquée. Ta progression reste dans ce navigateur.</p>
 
   <div class="card">
     <p class="eyebrow">1. Chapitres</p>
@@ -135,6 +135,7 @@ td.n{font-variant-numeric:tabular-nums;text-align:right}
   const math=el=>{if(window.renderMathInElement)renderMathInElement(el,{delimiters:[{left:'$',right:'$',display:false}],throwOnError:false})};
   const hist=store.get('hist',{});           // id -> {n: essais, ok: bonnes, last: bool}
   let selected=new Set(store.get('chaps',Object.keys(CHAPTERS)));
+  const h=location.hash.slice(1);if(CHAPTERS[h])selected=new Set([h]);
   let mode='train';
   const HELP={train:"Correction immédiate après chaque réponse, avec l'explication.",exam:"1 minute par question, correction à la fin seulement. Conditions proches d'une épreuve.",errors:"Uniquement les questions où ta dernière réponse était fausse."};
 

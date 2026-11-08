@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Knowledge distillation</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* Même système que qcm.html et programme-revision.html. */
+:root{--on-acc:#ffffff;--bg:#f6f6f2;--card:#fff;--ink:#1c2330;--mute:#5c6577;--line:#e3e3dc;--control:#8a909a;--acc:#1f5fbf;--acc-soft:#e8f0fc;--ok:#1a7f4b;--ok-soft:#e5f5ec;--ko:#b3261e;--ko-soft:#fbe9e7;--warn:#9a5b00;--warn-soft:#fdf2df;--code:#f1f2f4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--on-acc:#0d1626;--bg:#12151b;--card:#1a1f27;--ink:#e5e8ee;--mute:#9aa4b5;--line:#2b323e;--control:#6c7584;--acc:#6aa5ff;--acc-soft:#1c2a40;--ok:#4cc488;--ok-soft:#163026;--ko:#ff8a80;--ko-soft:#3a1d1b;--warn:#f0b35a;--warn-soft:#352812;--code:#222833;color-scheme:dark}}
+:root[data-theme="dark"]{--on-acc:#0d1626;--bg:#12151b;--card:#1a1f27;--ink:#e5e8ee;--mute:#9aa4b5;--line:#2b323e;--control:#6c7584;--acc:#6aa5ff;--acc-soft:#1c2a40;--ok:#4cc488;--ok-soft:#163026;--ko:#ff8a80;--ko-soft:#3a1d1b;--warn:#f0b35a;--warn-soft:#352812;--code:#222833;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);padding:10px max(16px,env(safe-area-inset-left,0px));display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+header.top b{font-family:"Source Serif 4",Georgia,serif;font-size:1.05rem}
+header.top nav{display:flex;gap:14px;margin-left:auto;font-size:.9rem}
+main{max-width:820px;margin:0 auto;padding-block:30px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font:700 2.1rem/1.15 "Source Serif 4",Georgia,serif;margin:0 0 10px;text-wrap:balance}
+h2{font:700 1.4rem/1.25 "Source Serif 4",Georgia,serif;margin:42px 0 10px;text-wrap:balance}
+h2 .n{font:500 .8rem "IBM Plex Mono",monospace;color:var(--acc);display:block;margin-bottom:4px;letter-spacing:.05em}
+p,li{max-width:68ch}
+.lead{color:var(--mute);font-size:1.05rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}
+.key{border-left:4px solid var(--ok);background:var(--ok-soft);padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0}
+.warn{border-left:4px solid var(--warn);background:var(--warn-soft);padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0}
+code,pre{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;font-size:.86em}
+code{background:var(--code);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);padding:12px 14px;border-radius:8px;overflow:auto;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mute)}
+.tw{overflow-x:auto}
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;text-align:center;font-size:.92rem}
+.flow .box{border:1px solid var(--control);border-radius:10px;padding:12px 8px;background:var(--card)}
+.flow .box b{display:block;font-family:"Source Serif 4",Georgia,serif;font-size:1.05rem}
+.flow .arr{color:var(--mute);font-size:1.3rem}
+@media (max-width:620px){.flow{grid-template-columns:1fr}.flow .arr{transform:rotate(90deg)}}
+.temp label{font-weight:600}
+.temp input[type=range]{width:100%;accent-color:var(--acc);margin:10px 0}
+.bars{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;align-items:end;height:160px;border-bottom:1px solid var(--line);margin-top:8px}
+.bars div{background:var(--acc);border-radius:3px 3px 0 0;transition:height .25s;position:relative;min-height:1px}
+.bars div.top{background:var(--ok)}
+.bars div span{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font:500 .66rem "IBM Plex Mono",monospace;color:var(--mute);white-space:nowrap;margin-bottom:2px}
+.lab{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;text-align:center;font:500 .8rem "IBM Plex Mono",monospace;color:var(--mute);margin-top:4px}
+.meta{color:var(--mute);font-size:.86rem}
+.cta{display:inline-block;background:var(--acc);color:var(--on-acc);text-decoration:none;font-weight:600;padding:10px 18px;border-radius:8px;margin-top:6px}
+.cta:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.bars div{transition:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <b>Knowledge distillation</b>
+  <nav><a href="qcm.html#dist">QCM distillation</a><a href="programme-revision.html">Programme</a><a href="index.html">Accueil</a></nav>
+</header>
+<main>
+<h1>La distillation : apprendre d'un modèle plutôt que des seuls labels</h1>
+<p class="lead">Un gros modèle (le <b>professeur</b>) est précis mais lent et coûteux. On entraîne un petit modèle (l'<b>élève</b>) à reproduire ses prédictions. L'élève garde l'essentiel des performances pour une fraction du coût. Ce chapitre n'est pas dans le cours d'I. Yamane : c'est un complément, construit sur les articles de référence.</p>
+
+<div class="card flow" role="img" aria-label="Le professeur figé produit des probabilités adoucies ; l'élève apprend à les reproduire, en plus des vrais labels.">
+  <div class="box"><b>Professeur</b>grand, pré-entraîné, figé</div>
+  <div class="arr">→</div>
+  <div class="box"><b>Soft targets</b>probabilités adoucies par une température T</div>
+  <div class="arr">→</div>
+  <div class="box"><b>Élève</b>petit, entraîné à les reproduire (et à respecter les vrais labels)</div>
+</div>
+
+<h2><span class="n">1</span>Pourquoi des probabilités plutôt que des labels ?</h2>
+<p>Un label one-hot dit seulement « c'est un 2 ». Le professeur dit davantage : « c'est un 2, ça ressemble un peu à un 3 et à un 7, pas du tout à un 1 ». Ces petites probabilités sur les mauvaises classes, Hinton les appelle la <b>dark knowledge</b>. Elles encodent les ressemblances entre classes, et chaque exemple apporte ainsi beaucoup plus d'information à l'élève.</p>
+<p>Conséquences pratiques :</p>
+<ul>
+<li>l'élève généralise mieux qu'un même petit modèle entraîné sur les seuls labels ;</li>
+<li>les données de transfert peuvent être <b>non labellisées</b>, puisque c'est le professeur qui fournit les cibles ;</li>
+<li>à l'origine (Hinton, Vinyals et Dean, 2015), l'idée servait à compresser un <b>ensemble</b> de modèles en un seul.</li>
+</ul>
+
+<h2><span class="n">2</span>La température</h2>
+<p>Un professeur bien entraîné est très sûr de lui : 0,99 sur la bonne classe, presque rien ailleurs. Pour faire apparaître la dark knowledge, on divise les logits par une température $T$ avant le softmax :</p>
+<p>$$p_i = \frac{\exp(z_i / T)}{\sum_j \exp(z_j / T)}$$</p>
+<p>$T = 1$ donne le softmax habituel ; $T &gt; 1$ adoucit la distribution ; $T \to \infty$ la rend uniforme ; $T \to 0$ la rend one-hot.</p>
+
+<div class="card temp">
+  <label for="T">Température T = <span id="Tv">1</span></label>
+  <input type="range" id="T" min="1" max="10" step="0.5" value="1">
+  <div class="bars" id="bars" aria-hidden="true"></div>
+  <div class="lab"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></div>
+  <p class="meta" id="tdesc" aria-live="polite" style="margin-top:10px"></p>
+  <p class="meta">Logits illustratifs d'un professeur face à un « 2 » manuscrit.</p>
+</div>
+<div class="key">À T = 1, presque tout est sur le « 2 ». En montant la température, on voit apparaître que le professeur hésite surtout avec le 3 et le 7 : c'est exactement l'information transmise à l'élève.</div>
+
+<h2><span class="n">3</span>La fonction de perte</h2>
+<p>L'élève optimise deux termes : rester juste sur les vrais labels, et imiter les probabilités adoucies du professeur.</p>
+<p>$$\mathcal{L} = \alpha\, \text{CE}\big(y,\ p_S\big) \;+\; (1-\alpha)\, T^2\, \text{KL}\big(p_T^{(T)} \,\|\, p_S^{(T)}\big)$$</p>
+<ul>
+<li>$p_S$ : sortie de l'élève à $T = 1$ ; $p_T^{(T)}$ et $p_S^{(T)}$ : sorties du professeur et de l'élève à la température $T$.</li>
+<li>$\alpha$ équilibre les deux termes. On met souvent plus de poids sur l'imitation.</li>
+<li><b>Pourquoi $T^2$ ?</b> Le gradient du terme adouci par rapport à un logit vaut $(q_i - p_i)/T$, donc il rétrécit en $1/T^2$. Multiplier par $T^2$ garde l'équilibre entre les deux termes quand on change $T$.</li>
+<li>À l'inférence, l'élève prédit à <b>T = 1</b>.</li>
+</ul>
+<pre><code>import torch.nn.functional as F
+
+def distillation_loss(s_logits, t_logits, y, T=4.0, alpha=0.3):
+    hard = F.cross_entropy(s_logits, y)                      # vrais labels
+    soft = F.kl_div(F.log_softmax(s_logits / T, dim=1),      # élève : LOG-probas
+                    F.softmax(t_logits / T, dim=1),          # professeur : probas
+                    reduction="batchmean") * T * T
+    return alpha * hard + (1 - alpha) * soft
+
+teacher.eval()                     # coupe le dropout du professeur
+for x, y in loader:
+    with torch.no_grad():          # pas de gradient pour le professeur
+        t_logits = teacher(x)
+    loss = distillation_loss(student(x), t_logits, y)
+    optimizer.zero_grad(); loss.backward(); optimizer.step()</code></pre>
+<div class="warn"><b>Piège classique :</b> <code>F.kl_div</code> attend des <b>log-probabilités</b> pour l'élève et des <b>probabilités</b> pour le professeur. Inverser ou oublier le log donne une perte fausse, sans aucun message d'erreur.</div>
+
+<h2><span class="n">4</span>Que peut-on transférer ?</h2>
+<div class="tw"><table>
+<tr><th>Famille</th><th>Ce que l'élève imite</th><th>Exemples</th></tr>
+<tr><td><b>Réponses</b></td><td>les sorties (logits ou probabilités) du professeur</td><td>Hinton et al. (2015)</td></tr>
+<tr><td><b>Caractéristiques</b></td><td>des représentations intermédiaires</td><td>FitNets (« hints », avec une couche de régression pour adapter les dimensions) ; attention transfer (cartes d'attention spatiale des CNN)</td></tr>
+<tr><td><b>Relations</b></td><td>la géométrie entre exemples : distances, angles</td><td>Relational KD (Park et al., 2019)</td></tr>
+</table></div>
+<p>Et selon l'organisation de l'entraînement :</p>
+<ul>
+<li><b>hors ligne</b> : professeur pré-entraîné et figé (le cas classique) ;</li>
+<li><b>en ligne</b> : plusieurs modèles apprennent ensemble en s'imitant (deep mutual learning) ;</li>
+<li><b>auto-distillation</b> : le modèle sert de professeur à lui-même (couches profondes vers couches peu profondes, ou une génération vers la suivante). Les <i>born-again networks</i> montrent qu'un élève de même taille peut même dépasser son professeur.</li>
+</ul>
+
+<h2><span class="n">5</span>Exemples à connaître</h2>
+<div class="tw"><table>
+<tr><th>Modèle</th><th>Idée</th></tr>
+<tr><td><b>DistilBERT</b> (2019)</td><td>BERT à 6 couches au lieu de 12, initialisé avec une couche sur deux du professeur. Perte : distillation des sorties + MLM + cosinus entre états cachés. Environ 40 % plus petit, 60 % plus rapide, 97 % des performances sur GLUE.</td></tr>
+<tr><td><b>TinyBERT</b></td><td>Distillation couche par couche : embeddings, matrices d'attention, états cachés, sorties ; d'abord générale, puis spécifique à la tâche.</td></tr>
+<tr><td><b>Distillation de séquences</b> (Kim et Rush, 2016)</td><td>En traduction, l'élève apprend les phrases générées par le professeur plutôt que la distribution mot par mot.</td></tr>
+<tr><td><b>LLM distillés</b></td><td>Le professeur génère de nombreuses réponses, l'élève est affiné dessus. Exemple : DeepSeek-R1-Distill (Qwen et Llama plus petits, affinés sur des raisonnements de DeepSeek-R1).</td></tr>
+</table></div>
+<p>Lien avec le cours : DistilBERT est la version allégée du BERT de la préparation au TP noté. Remplacer un BERT à 12 couches par 6 couches divise presque par deux la latence, puisque les couches se calculent l'une après l'autre.</p>
+
+<h2><span class="n">6</span>Ce qui peut mal tourner</h2>
+<ul>
+<li><b>Écart de capacité</b> : un professeur beaucoup trop gros n'est pas forcément un meilleur professeur pour un tout petit élève. Parade : un professeur intermédiaire (teacher assistant).</li>
+<li><b>Erreurs héritées</b> : l'élève copie aussi les erreurs du professeur. Garder le terme sur les vrais labels limite le problème.</li>
+<li><b>Professeur entraîné avec label smoothing</b> : il distille moins bien, car le lissage efface une partie des ressemblances entre classes.</li>
+<li><b>Professeur en mode train</b> : le dropout rend ses cibles bruitées. Toujours <code>teacher.eval()</code>.</li>
+<li><b>Question juridique</b> : entraîner un imitateur sur les réponses d'un modèle propriétaire relève de l'extraction de modèle, encadrée par ses conditions d'utilisation.</li>
+</ul>
+
+<h2><span class="n">7</span>Distillation, élagage, quantification</h2>
+<div class="tw"><table>
+<tr><th>Méthode</th><th>Principe</th><th>Résultat</th></tr>
+<tr><td>Distillation</td><td>entraîner un nouveau modèle plus petit à imiter le grand</td><td>architecture plus petite</td></tr>
+<tr><td>Élagage (pruning)</td><td>retirer les poids ou les neurones peu utiles</td><td>même architecture, plus creuse</td></tr>
+<tr><td>Quantification</td><td>stocker et calculer en basse précision (int8, etc.)</td><td>même modèle, moins de mémoire</td></tr>
+</table></div>
+<p>Les trois se combinent souvent : distiller, puis quantifier l'élève.</p>
+
+<h2><span class="n">8</span>À retenir</h2>
+<div class="key">
+<ol style="margin:0;padding-left:20px">
+<li>L'élève apprend des <b>probabilités</b> du professeur, qui contiennent les ressemblances entre classes.</li>
+<li>La <b>température</b> adoucit ces probabilités ; l'élève prédit ensuite à T = 1.</li>
+<li>Perte = $\alpha$ × vrais labels + $(1-\alpha)\, T^2$ × KL avec le professeur.</li>
+<li>On peut aussi transférer des couches intermédiaires ou des relations entre exemples.</li>
+<li>Exemple phare : DistilBERT, environ 40 % plus petit et 60 % plus rapide pour 97 % des performances.</li>
+</ol>
+</div>
+<p><a class="cta" href="qcm.html#dist">S'entraîner : 45 QCM sur la distillation</a></p>
+</main>
+<script>
+(function(){
+  // logits illustratifs d'un professeur pour un « 2 » manuscrit (classes 0 à 9)
+  const Z=[1.0,0.2,9.0,5.5,0.8,1.2,0.5,4.8,2.2,0.9];
+  const bars=document.getElementById('bars'), Tin=document.getElementById('T');
+  bars.innerHTML=Z.map(()=>'<div><span></span></div>').join('');
+  function draw(){
+    const T=+Tin.value, e=Z.map(z=>Math.exp(z/T)), s=e.reduce((a,b)=>a+b,0), p=e.map(x=>x/s), mx=Math.max(...p);
+    document.getElementById('Tv').textContent=String(T).replace('.',',');
+    [...bars.children].forEach((d,i)=>{d.style.height=(100*p[i]/mx)+'%';d.classList.toggle('top',i===2);d.firstChild.textContent=Math.round(100*p[i])+'%'});
+    document.getElementById('tdesc').textContent='Probabilité du « 2 » : '+Math.round(100*p[2])+' % ; du « 3 » : '+Math.round(100*p[3])+' % ; du « 7 » : '+Math.round(100*p[7])+' %.';
+  }
+  Tin.oninput=draw;draw();
+  addEventListener('load',()=>{if(window.renderMathInElement)renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})});
+})();
+</script>
+</body>
+</html>
