@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QCM Deep Learning</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* Même système que programme-revision.html : papier clair, accent bleu, vert = juste, rouge = faux. */
+:root{--on-acc:#ffffff;--bg:#f6f6f2;--card:#fff;--ink:#1c2330;--mute:#5c6577;--line:#e3e3dc;--control:#8a909a;--acc:#1f5fbf;--acc-soft:#e8f0fc;--ok:#1a7f4b;--ok-soft:#e5f5ec;--ko:#b3261e;--ko-soft:#fbe9e7;--warn:#9a5b00;--warn-soft:#fdf2df}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--on-acc:#0d1626;--bg:#12151b;--card:#1a1f27;--ink:#e5e8ee;--mute:#9aa4b5;--line:#2b323e;--control:#6c7584;--acc:#6aa5ff;--acc-soft:#1c2a40;--ok:#4cc488;--ok-soft:#163026;--ko:#ff8a80;--ko-soft:#3a1d1b;--warn:#f0b35a;--warn-soft:#352812;color-scheme:dark}}
+:root[data-theme="dark"]{--on-acc:#0d1626;--bg:#12151b;--card:#1a1f27;--ink:#e5e8ee;--mute:#9aa4b5;--line:#2b323e;--control:#6c7584;--acc:#6aa5ff;--acc-soft:#1c2a40;--ok:#4cc488;--ok-soft:#163026;--ko:#ff8a80;--ko-soft:#3a1d1b;--warn:#f0b35a;--warn-soft:#352812;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--acc)}
+header.top{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);padding:10px max(16px,env(safe-area-inset-left,0px));display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+header.top b{font-family:"Source Serif 4",Georgia,serif;font-size:1.05rem}
+header.top nav{display:flex;gap:14px;margin-left:auto;font-size:.9rem}
+main{max-width:860px;margin:0 auto;padding-block:28px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font:700 2rem/1.15 "Source Serif 4",Georgia,serif;margin:0 0 8px;text-wrap:balance}
+h2{font:700 1.3rem/1.25 "Source Serif 4",Georgia,serif;margin:28px 0 10px}
+.lead{color:var(--mute);margin:0 0 20px;max-width:62ch}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0}
+.eyebrow{text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;font-weight:700;color:var(--acc);margin:0 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--control);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 12px;font:inherit;font-size:.9rem;cursor:pointer;min-height:36px}
+.chip[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--on-acc)}
+.chip .pct{font:500 .75rem "IBM Plex Mono",monospace;opacity:.85}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font:inherit;font-weight:600;border:1px solid var(--control);background:var(--card);color:var(--ink);border-radius:8px;padding:9px 16px;cursor:pointer;min-height:40px}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:var(--on-acc)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,.chip:focus-visible,.opt:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.seg{display:inline-flex;border:1px solid var(--control);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:.9rem;border:0;background:var(--card);color:var(--ink);padding:8px 14px;cursor:pointer;min-height:40px}
+.seg button+button{border-left:1px solid var(--control)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.meta{color:var(--mute);font-size:.88rem;font-variant-numeric:tabular-nums}
+.bar{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0 16px}
+.bar i{display:block;height:100%;background:var(--acc);width:0;transition:width .3s}
+.qtext{font-size:1.12rem;font-weight:600;margin:6px 0 14px}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin:8px 0;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--acc)}
+.opt .k{flex:none;width:24px;height:24px;border-radius:6px;border:1px solid var(--control);display:grid;place-items:center;font:500 .8rem "IBM Plex Mono",monospace}
+.opt.good{border-color:var(--ok);background:var(--ok-soft)}
+.opt.bad{border-color:var(--ko);background:var(--ko-soft)}
+.opt.chosen{border-color:var(--acc);background:var(--acc-soft)}
+.opt:disabled{cursor:default}
+.exp{border-left:4px solid var(--acc);background:var(--acc-soft);padding:10px 14px;border-radius:0 8px 8px 0;margin-top:12px}
+.verdict{font-weight:700;margin-right:6px}.verdict.ok{color:var(--ok)}.verdict.ko{color:var(--ko)}
+.timer{font:600 1rem "IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.big{font:700 3rem/1 "Source Serif 4",Georgia,serif;color:var(--acc);font-variant-numeric:tabular-nums}
+.review .q{border-top:1px solid var(--line);padding:12px 0}
+.review .q:first-child{border-top:0}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;padding:1px 8px;border-radius:99px;background:var(--acc-soft);color:var(--acc);margin-right:6px}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left}
+td.n{font-variant-numeric:tabular-nums;text-align:right}
+.tw{overflow-x:auto}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <b>QCM Deep Learning</b>
+  <span class="meta" id="hdr"></span>
+  <nav><a href="programme-revision.html">Programme</a><a href="index.html">Accueil</a></nav>
+</header>
+<main>
+
+<section id="setup">
+  <h1>Le cours de Deep Learning, en QCM</h1>
+  <p class="lead">Toutes les notions du cours, chapitre par chapitre : MLP, optimisation, CNN, RNN, autoencodeurs, GAN, diffusion, Transformers, BERT et méthodologie. Chaque réponse est expliquée. Ta progression reste dans ce navigateur.</p>
+
+  <div class="card">
+    <p class="eyebrow">1. Chapitres</p>
+    <div class="chips" id="chips"></div>
+    <div class="row" style="margin-top:10px"><button class="btn" type="button" id="all">Tout sélectionner</button><button class="btn" type="button" id="none">Tout désélectionner</button></div>
+  </div>
+
+  <div class="card">
+    <p class="eyebrow">2. Mode</p>
+    <div class="seg" role="group" aria-label="Mode" id="modes">
+      <button type="button" data-mode="train" aria-pressed="true">Entraînement</button>
+      <button type="button" data-mode="exam" aria-pressed="false">Examen chronométré</button>
+      <button type="button" data-mode="errors" aria-pressed="false">Mes erreurs</button>
+    </div>
+    <p class="meta" id="modeHelp" style="margin:10px 0 0"></p>
+    <div class="row" style="margin-top:12px">
+      <label for="count" class="meta">Nombre de questions</label>
+      <select id="count" class="btn" style="font-weight:500">
+        <option value="10">10</option><option value="20" selected>20</option><option value="40">40</option><option value="9999">Toutes</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row"><button class="btn pri" type="button" id="start">Commencer</button><span class="meta" id="avail"></span></div>
+
+  <h2>Ma progression</h2>
+  <div class="card tw"><table id="stats"></table>
+    <p class="meta" style="margin:10px 0 0">« Maîtrisé » : dernière réponse juste. <button class="btn" type="button" id="reset" style="margin-left:8px">Réinitialiser</button></p>
+  </div>
+</section>
+
+<section id="quiz" hidden>
+  <div class="row" style="justify-content:space-between"><span class="meta" id="qpos"></span><span class="timer" id="timer" hidden></span></div>
+  <div class="bar"><i id="qbar"></i></div>
+  <div class="card" id="qcard"></div>
+  <div class="row" style="justify-content:space-between">
+    <button class="btn" type="button" id="quit">Arrêter</button>
+    <button class="btn pri" type="button" id="next" disabled>Suivant</button>
+  </div>
+  <p class="meta" style="margin-top:14px">Clavier : touches 1 à 4 pour répondre, Entrée pour continuer.</p>
+</section>
+
+<section id="result" hidden>
+  <p class="eyebrow">Résultat</p>
+  <div class="row"><span class="big" id="score"></span><span class="meta" id="scoreTxt"></span></div>
+  <div class="card tw"><table id="byChap"></table></div>
+  <h2>Correction des erreurs</h2>
+  <div class="card review" id="review"></div>
+  <div class="row"><button class="btn pri" type="button" id="again">Nouvelle série</button><button class="btn" type="button" id="redoErr">Refaire mes erreurs</button></div>
+</section>
+
+</main>
+<script src="qcm-data.js"></script>
+<script>
+(function(){
+  const store={get(k,d){try{const v=localStorage.getItem('dlqcm:'+k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('dlqcm:'+k,JSON.stringify(v))}catch(e){}}};
+  const $=id=>document.getElementById(id);
+  const math=el=>{if(window.renderMathInElement)renderMathInElement(el,{delimiters:[{left:'$',right:'$',display:false}],throwOnError:false})};
+  const hist=store.get('hist',{});           // id -> {n: essais, ok: bonnes, last: bool}
+  let selected=new Set(store.get('chaps',Object.keys(CHAPTERS)));
+  let mode='train';
+  const HELP={train:"Correction immédiate après chaque réponse, avec l'explication.",exam:"1 minute par question, correction à la fin seulement. Conditions proches d'une épreuve.",errors:"Uniquement les questions où ta dernière réponse était fausse."};
+
+  function pct(ids){const a=ids.filter(i=>hist[i]);if(!a.length)return null;return Math.round(100*a.filter(i=>hist[i].last).length/ids.length)}
+  function idsOf(c){return QCM.map((q,i)=>i).filter(i=>QCM[i].c===c)}
+
+  function renderSetup(){
+    $('chips').innerHTML=Object.entries(CHAPTERS).map(([k,v])=>{const p=pct(idsOf(k));return '<button type="button" class="chip" data-c="'+k+'" aria-pressed="'+selected.has(k)+'">'+v+' <span class="pct">'+idsOf(k).length+' q'+(p===null?'':' · '+p+' %')+'</span></button>'}).join('');
+    $('chips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const c=b.dataset.c;selected.has(c)?selected.delete(c):selected.add(c);store.set('chaps',[...selected]);renderSetup()});
+    $('modeHelp').textContent=HELP[mode];
+    const n=pool().length;$('avail').textContent=n+' question'+(n>1?'s':'')+' disponible'+(n>1?'s':'');$('start').disabled=n===0;
+    const rows=Object.entries(CHAPTERS).map(([k,v])=>{const ids=idsOf(k),seen=ids.filter(i=>hist[i]).length,mast=ids.filter(i=>hist[i]&&hist[i].last).length;return '<tr><td>'+v+'</td><td class="n">'+seen+' / '+ids.length+'</td><td class="n">'+mast+'</td></tr>'}).join('');
+    const tot=QCM.length,seen=Object.keys(hist).length,mast=Object.values(hist).filter(h=>h.last).length;
+    $('stats').innerHTML='<tr><th>Chapitre</th><th style="text-align:right">Vues</th><th style="text-align:right">Maîtrisées</th></tr>'+rows+'<tr><th>Total</th><th style="text-align:right">'+seen+' / '+tot+'</th><th style="text-align:right">'+mast+'</th></tr>';
+    $('hdr').textContent=mast+' / '+tot+' maîtrisées';
+  }
+  function pool(){let ids=QCM.map((q,i)=>i).filter(i=>selected.has(QCM[i].c));if(mode==='errors')ids=ids.filter(i=>hist[i]&&!hist[i].last);return ids}
+  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+  $('modes').querySelectorAll('button').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;$('modes').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderSetup()});
+  $('all').onclick=()=>{selected=new Set(Object.keys(CHAPTERS));store.set('chaps',[...selected]);renderSetup()};
+  $('none').onclick=()=>{selected=new Set();store.set('chaps',[]);renderSetup()};
+  let armed=false;$('reset').onclick=()=>{if(!armed){armed=true;$('reset').textContent='Confirmer';setTimeout(()=>{armed=false;$('reset').textContent='Réinitialiser'},4000);return}for(const k in hist)delete hist[k];store.set('hist',hist);armed=false;$('reset').textContent='Réinitialiser';renderSetup()};
+
+  // ---------- session ----------
+  let S=null,tm=null;
+  function start(forceIds){
+    let ids=forceIds||shuffle(pool());
+    if(!forceIds){const n=+$('count').value;
+      // en entraînement, on montre d'abord les questions jamais vues ou ratées
+      if(mode==='train')ids.sort((a,b)=>(hist[a]?(hist[a].last?2:1):0)-(hist[b]?(hist[b].last?2:1):0));
+      ids=ids.slice(0,n)}
+    S={ids,pos:0,answers:[],exam:mode==='exam'&&!forceIds,orders:ids.map(i=>shuffle(QCM[i].o.map((_,k)=>k)))};
+    $('setup').hidden=true;$('result').hidden=true;$('quiz').hidden=false;
+    clearInterval(tm);$('timer').hidden=!S.exam;
+    if(S.exam){let left=ids.length*60;const show=()=>{$('timer').textContent=String(Math.floor(left/60)).padStart(2,'0')+':'+String(left%60).padStart(2,'0')};show();tm=setInterval(()=>{left--;show();if(left<=0){clearInterval(tm);finish()}},1000)}
+    showQ();scrollTo(0,0);
+  }
+  function showQ(){
+    const i=S.ids[S.pos],q=QCM[i],ord=S.orders[S.pos];
+    $('qpos').textContent='Question '+(S.pos+1)+' / '+S.ids.length+' · '+CHAPTERS[q.c];
+    $('qbar').style.width=(100*S.pos/S.ids.length)+'%';
+    $('qcard').innerHTML='<p class="qtext">'+q.q+'</p>'+ord.map((k,j)=>'<button type="button" class="opt" data-k="'+k+'"><span class="k">'+(j+1)+'</span><span>'+q.o[k]+'</span></button>').join('')+'<div id="fb"></div>';
+    $('qcard').querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.k));
+    $('next').disabled=true;$('next').textContent=S.pos===S.ids.length-1?'Voir le résultat':'Suivant';
+    math($('qcard'));
+    const first=$('qcard').querySelector('.opt');if(first)first.focus({preventScroll:true});
+  }
+  function answer(k){
+    if(S.answers[S.pos]!==undefined)return;
+    const i=S.ids[S.pos],q=QCM[i],ok=k===q.a;S.answers[S.pos]=k;
+    const h=hist[i]||{n:0,ok:0,last:false};h.n++;if(ok)h.ok++;h.last=ok;hist[i]=h;store.set('hist',hist);
+    $('qcard').querySelectorAll('.opt').forEach(b=>{b.disabled=true;const kk=+b.dataset.k;
+      if(S.exam){if(kk===k)b.classList.add('chosen')}
+      else{if(kk===q.a)b.classList.add('good');else if(kk===k)b.classList.add('bad')}});
+    if(!S.exam){$('fb').innerHTML='<div class="exp"><span class="verdict '+(ok?'ok">Juste.':'ko">Faux.')+'</span>'+q.e+'</div>';math($('fb'))}
+    $('next').disabled=false;$('next').focus({preventScroll:true});
+  }
+  function next(){if(S.answers[S.pos]===undefined)return;if(S.pos<S.ids.length-1){S.pos++;showQ()}else finish()}
+  function finish(){
+    clearInterval(tm);
+    const n=S.ids.length,good=S.ids.filter((i,p)=>S.answers[p]===QCM[i].a).length;
+    $('quiz').hidden=true;$('result').hidden=false;
+    $('score').textContent=good+' / '+n;
+    const note=Math.round(20*good/n*10)/10;
+    $('scoreTxt').textContent='soit '+String(note).replace('.',',')+' / 20'+(S.answers.length<n?' · '+(n-S.answers.length)+' sans réponse (temps écoulé ou arrêt)':'');
+    const per={};S.ids.forEach((i,p)=>{const c=QCM[i].c;per[c]=per[c]||[0,0];per[c][1]++;if(S.answers[p]===q(i).a)per[c][0]++});
+    function q(i){return QCM[i]}
+    $('byChap').innerHTML='<tr><th>Chapitre</th><th style="text-align:right">Score</th></tr>'+Object.entries(per).map(([c,[g,t]])=>'<tr><td>'+CHAPTERS[c]+'</td><td class="n">'+g+' / '+t+'</td></tr>').join('');
+    const wrong=S.ids.map((i,p)=>[i,p]).filter(([i,p])=>S.answers[p]!==QCM[i].a);
+    $('review').innerHTML=wrong.length?wrong.map(([i,p])=>{const qq=QCM[i],a=S.answers[p];return '<div class="q"><span class="tag">'+CHAPTERS[qq.c]+'</span><b>'+qq.q+'</b><p class="meta" style="margin:6px 0">Ta réponse : '+(a===undefined?'aucune':qq.o[a])+'<br>Bonne réponse : <b>'+qq.o[qq.a]+'</b></p><div class="exp">'+qq.e+'</div></div>'}).join(''):'<p>Aucune erreur. Bravo.</p>';
+    S.wrongIds=wrong.map(([i])=>i);$('redoErr').disabled=!wrong.length;
+    math($('result'));renderSetup();scrollTo(0,0);
+  }
+  $('start').onclick=()=>start();
+  $('next').onclick=next;
+  $('quit').onclick=()=>{if(S&&S.answers.length)finish();else{clearInterval(tm);$('quiz').hidden=true;$('setup').hidden=false;renderSetup()}};
+  $('again').onclick=()=>{$('result').hidden=true;$('setup').hidden=false;renderSetup();scrollTo(0,0)};
+  $('redoErr').onclick=()=>start(shuffle(S.wrongIds.slice()));
+  addEventListener('keydown',e=>{
+    if($('quiz').hidden||e.target.tagName==='SELECT')return;
+    if(/^[1-4]$/.test(e.key)){const b=$('qcard').querySelectorAll('.opt')[+e.key-1];if(b&&!b.disabled)b.click()}
+    else if(e.key==='Enter'&&!$('next').disabled&&e.target.tagName!=='BUTTON'){e.preventDefault();next()}
+  });
+  renderSetup();
+  addEventListener('load',()=>math(document.body));
+})();
+</script>
+</body>
+</html>
