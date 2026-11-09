@@ -88,13 +88,13 @@ th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mu
 
 <div class="card temp">
   <label for="T">Température T = <span id="Tv">1</span></label>
-  <input type="range" id="T" min="1" max="10" step="0.5" value="1">
+  <input type="range" id="T" min="0.25" max="10" step="0.25" value="1">
   <div class="bars" id="bars" aria-hidden="true"></div>
   <div class="lab"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></div>
   <p class="meta" id="tdesc" aria-live="polite" style="margin-top:10px"></p>
-  <p class="meta">Logits illustratifs d'un professeur face à un « 2 » manuscrit.</p>
+  <p class="meta">Logits illustratifs d'un professeur face à un « 2 » manuscrit. Le curseur va de T = 0,25 à T = 10.</p>
 </div>
-<div class="key">À T = 1, presque tout est sur le « 2 ». En montant la température, on voit apparaître que le professeur hésite surtout avec le 3 et le 7 : c'est exactement l'information transmise à l'élève.</div>
+<div class="key">À T = 1, presque tout est sur le « 2 ». En montant la température (T &gt; 1), on voit apparaître que le professeur hésite surtout avec le 3 et le 7 : c'est exactement l'information transmise à l'élève. À l'inverse, avec T &lt; 1, les écarts entre logits sont amplifiés : la distribution devient encore plus piquée, presque un one-hot, et la dark knowledge disparaît. C'est pourquoi on distille avec T &gt; 1, jamais avec T &lt; 1.</div>
 
 <h2><span class="n">3</span>La fonction de perte</h2>
 <p>L'élève optimise deux termes : rester juste sur les vrais labels, et imiter les probabilités adoucies du professeur.</p>
@@ -186,7 +186,8 @@ for x, y in loader:
     const T=+Tin.value, e=Z.map(z=>Math.exp(z/T)), s=e.reduce((a,b)=>a+b,0), p=e.map(x=>x/s), mx=Math.max(...p);
     document.getElementById('Tv').textContent=String(T).replace('.',',');
     [...bars.children].forEach((d,i)=>{d.style.height=(100*p[i]/mx)+'%';d.classList.toggle('top',i===2);d.firstChild.textContent=Math.round(100*p[i])+'%'});
-    document.getElementById('tdesc').textContent='Probabilité du « 2 » : '+Math.round(100*p[2])+' % ; du « 3 » : '+Math.round(100*p[3])+' % ; du « 7 » : '+Math.round(100*p[7])+' %.';
+    const regime=T<1?' T < 1 : distribution plus piquée que le softmax habituel.':(T===1?' T = 1 : softmax habituel.':' T > 1 : distribution adoucie.');
+    document.getElementById('tdesc').textContent='Probabilité du « 2 » : '+Math.round(100*p[2])+' % ; du « 3 » : '+Math.round(100*p[3])+' % ; du « 7 » : '+Math.round(100*p[7])+' %.'+regime;
   }
   Tin.oninput=draw;draw();
   addEventListener('load',()=>{if(window.renderMathInElement)renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})});
