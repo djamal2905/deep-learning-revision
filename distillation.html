@@ -164,7 +164,128 @@ for x, y in loader:
 </table></div>
 <p>Les trois se combinent souvent : distiller, puis quantifier l'élève.</p>
 
-<h2><span class="n">8</span>À retenir</h2>
+<h2><span class="n">8</span>Le code complet, en classes</h2>
+<p>Un professeur CNN (421 642 paramètres) et un élève MLP (25 450 paramètres, 16 fois plus petit) sur MNIST. L'organisation reprend celle du TP4 : une perte, un modèle avec <code>training_step</code> et <code>validation_step</code>, un <code>Trainer</code> qui valide à chaque epoch et garde la meilleure, puis un test unique à la fin. Le notebook complet (données, modèles, deux expériences) tourne sur CPU.</p>
+<p><a class="cta" href="https://colab.research.google.com/github/djamal2905/deep-learning-revision/blob/main/notebooks/distillation.ipynb" target="_blank" rel="noopener">Ouvrir le notebook dans Colab</a> &nbsp; <a href="https://github.com/djamal2905/deep-learning-revision/blob/main/notebooks/distillation.ipynb" target="_blank" rel="noopener">Voir sur GitHub</a></p>
+<details class="card"><summary><b>Afficher le code principal</b> (perte, modèle distillé, entraînement, validation, test)</summary>
+<pre><code>class DistillationLoss(nn.Module):
+    def __init__(self, T=4.0, alpha=0.3):
+        super().__init__()
+        self.T, self.alpha = T, alpha
+
+    def forward(self, s_logits, t_logits, y):
+        hard = F.cross_entropy(s_logits, y)                              # vrais labels, T = 1
+        soft = F.kl_div(F.log_softmax(s_logits / self.T, dim=1),          # élève : LOG-probas
+                        F.softmax(t_logits / self.T, dim=1),              # professeur : probas
+                        reduction=&quot;batchmean&quot;) * self.T ** 2
+        return self.alpha * hard + (1 - self.alpha) * soft
+
+
+class Classifier(nn.Module):
+    &quot;&quot;&quot;Partie commune, comme au TP4.&quot;&quot;&quot;
+    def __init__(self, lr=1e-3):
+        super().__init__()
+        self.lr = lr
+
+    def configure_optimizers(self):
+        return torch.optim.Adam([p for p in self.parameters() if p.requires_grad], lr=self.lr)
+
+    def training_step(self, batch):
+        X, y = batch
+        return F.cross_entropy(self(X), y)
+
+    def validation_step(self, batch):
+        X, y = batch
+        with torch.no_grad():
+            logits = self(X)
+            loss = F.cross_entropy(logits, y, reduction=&quot;sum&quot;).item()
+        return loss, logits.argmax(1), y
+
+
+class DistilledStudent(Classifier):
+    &quot;&quot;&quot;Élève qui apprend du professeur figé : seule la perte d&#x27;entraînement change.&quot;&quot;&quot;
+    def __init__(self, student, teacher, T=4.0, alpha=0.3):
+        super().__init__(lr=student.lr)
+        self.student = student
+        self.teacher = teacher.eval()                  # pas de dropout chez le professeur
+        for p in self.teacher.parameters():
+            p.requires_grad = False                    # professeur figé
+        self.loss_fn = DistillationLoss(T, alpha)
+
+    def forward(self, x):
+        return self.student(x)                         # à l&#x27;inférence : l&#x27;élève seul, T = 1
+
+    def train(self, mode=True):
+        super().train(mode)
+        self.teacher.eval()                            # le professeur reste en eval
+        return self
+
+    def training_step(self, batch):
+        X, y = batch
+        with torch.no_grad():
+            t_logits = self.teacher(X)
+        return self.loss_fn(self.student(X), t_logits, y)
+
+
+def evaluate(dataloader, model):
+    model.eval()
+    loss, correct = 0.0, 0
+    for X, y in dataloader:
+        X, y = X.to(device), y.to(device)
+        batch_loss, pred, y_true = model.validation_step((X, y))
+        loss += batch_loss
+        correct += (pred == y_true).sum().item()
+    return loss / len(dataloader.dataset), correct / len(dataloader.dataset)
+
+
+class Trainer:
+    def __init__(self, max_epochs):
+        self.max_epochs = max_epochs
+
+    def fit(self, model, train_dl, val_dl):
+        model.to(device)
+        optimizer = model.configure_optimizers()
+        best_acc, best_state = -1.0, None
+        for epoch in range(self.max_epochs):
+            model.train()
+            for X, y in train_dl:
+                X, y = X.to(device), y.to(device)
+                loss = model.training_step((X, y))
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+            val_loss, val_acc = evaluate(val_dl, model)          # validation à chaque epoch
+            if val_acc &gt; best_acc:
+                best_acc, best_state = val_acc, copy.deepcopy(model.state_dict())
+        model.load_state_dict(best_state)                       # meilleure epoch en validation
+
+
+# entraînement : professeur, élève seul, élève distillé
+Trainer(3).fit(teacher, train_dl, val_dl)
+Trainer(10).fit(baseline, train_dl, val_dl)
+distilled = DistilledStudent(StudentMLP(), teacher, T=4.0, alpha=0.3)
+Trainer(10).fit(distilled, train_dl, val_dl)
+
+# test : une seule fois, à la fin
+for model in (teacher, baseline, distilled):
+    print(evaluate(test_dl, model))</code></pre>
+</details>
+
+<h3 style="font-family:'Source Serif 4',Georgia,serif;margin:22px 0 8px">Résultats réels (CPU, une seule seed)</h3>
+<div class="tw"><table>
+<tr><th>Expérience</th><th>Élève seul</th><th>Élève distillé</th><th>Professeur</th></tr>
+<tr><td>Élève entraîné sur 50 000 images, 10 epochs</td><td>96,75 %</td><td>96,28 %</td><td rowspan="2">98,62 %</td></tr>
+<tr><td>Élève entraîné sur 5 000 images, 30 epochs</td><td>92,61 %</td><td><b>93,37 %</b></td></tr>
+</table></div>
+<p class="meta">Accuracy sur les 10 000 images de test. Le professeur est entraîné une fois, sur les 50 000 images. T = 4, α = 0,3.</p>
+<div class="key"><b>Comment lire ces résultats :</b>
+<ul style="margin:6px 0 0">
+<li>Avec <b>beaucoup de données</b>, la distillation n'apporte rien ici : l'élève distillé apprend plus lentement (il progressait encore à la 10<sup>e</sup> epoch) et finit légèrement en dessous.</li>
+<li>Avec <b>peu de données</b> (5 000 images), l'élève distillé gagne <b>0,8 point</b> : le professeur lui transmet ce que 5 000 images ne suffisent pas à apprendre.</li>
+<li>C'est <b>une seule seed</b> : un écart de moins d'un point peut venir de la variabilité. Pour conclure, il faudrait répéter avec 3 à 5 seeds et comparer moyenne ± écart-type, comme à l'étape méthodologie du programme.</li>
+</ul></div>
+
+<h2><span class="n">9</span>À retenir</h2>
 <div class="key">
 <ol style="margin:0;padding-left:20px">
 <li>L'élève apprend des <b>probabilités</b> du professeur, qui contiennent les ressemblances entre classes.</li>
